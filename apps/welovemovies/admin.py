@@ -41,3 +41,5 @@ class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
     fetch_imdb.short_description = "Fetch information from IMDb"
 
 admin.site.register(Movie, MovieAdmin)
+
+

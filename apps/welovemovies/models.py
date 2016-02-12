@@ -1,4 +1,5 @@
 import imdb
+from django.conf import settings
 from django.db import models
 
 from mainsite.models import DefaultModel
@@ -71,5 +72,20 @@ class MovieMetadata(DefaultModel):
     source = models.CharField(max_length=254, blank=True, null=True)
     key = models.CharField(max_length=254, db_index=True)
     value = models.TextField()
+
+
+class Viewing(DefaultModel):
+    STATUS_UNWATCHED = 'unwatched'
+    STATUS_WATCHED = 'watched'
+    STATUS_REWATCHED = 'rewatched'
+    STATUS_CHOICES = (
+        (STATUS_UNWATCHED, 'Un-watched'),
+        (STATUS_WATCHED, 'Watched'),
+        (STATUS_REWATCHED, 'Re-watched'),
+    )
+    viewer = models.ForeignKey(settings.AUTH_USER_MODEL)
+    movie = models.ForeignKey('welovemovies.Movie')
+    status = models.CharField(max_length=254, choices=STATUS_CHOICES, default=STATUS_UNWATCHED)
+    viewed_on = models.DateField(blank=True, null=True)
 
 
