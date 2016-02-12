@@ -23,6 +23,11 @@ class Movie(DefaultModel):
     # rt_consensus = models.CharField(max_length=254, blank=True, null=True)
     # rt_tomatoes = models.CharField(max_length=254, blank=True, null=True)
 
+    def __unicode__(self):
+        if self.year:
+            return u"{} ({})".format(self.title, self.year)
+        return self.title
+
     def fetch_imdb(self, imdb_access=None):
         if not self.imdb_id:
             return False
