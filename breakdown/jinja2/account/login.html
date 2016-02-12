@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container">
+
+    <h1>Login</h1>
+
+    <div class="row">
+        <div class="col-sm-5">
+            <h2>Social</h2>
+            <ul>
+                {% for provider in get_social_providers() %}
+                    {% if provider.id == "twitter" %}
+                    <li>
+                        <a href="{{ provider.get_login_url(request, process='login') }}" class="card-link">
+                            <img src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"/>
+                        </a>
+                    </li>
+                    {%else%}
+                    <li>
+                        <a href="{{ provider.get_login_url(request, process='login') }}" class="card-link">Login with {{ provider.name }}</a>
+                    </li>
+                    {%endif%}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-sm-2">
+            OR
+        </div>
+
+        <div class="col-sm-5">
+            <h2>Login</h2>
+            <form method="POST" action="{{ reverse('account_login') }}">
+                {% if form.non_field_errors() %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>Login Failed!</strong>
+                </div>
+                {% endif %}
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+              <fieldset class="form-group {% if form.errors.login %}has-danger{%endif%}">
+                {% if form['login'].errors %}<label class="form-control-label has-danger" for="id_login">Please enter a username or email.</label>{%endif%}
+                <input type="text" class="form-control" id="id_login" name="login" placeholder="username or email" value="{%if form['login'].value() %}{{form['login'].value()}}{%endif%}">
+              </fieldset>
+              <fieldset class="form-group {% if form.password.errors %}has-danger{%endif%}">
+                  {%if form.password.errors%}<label class="form-control-label has-danger" for="id_password">Please provide a password.</label>{%endif%}
+                <input type="password" class="form-control" id="id_password" name="password" placeholder="password">
+              </fieldset>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+{% endblock %}

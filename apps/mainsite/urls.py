@@ -23,7 +23,7 @@ urlpatterns = [
 
     # allauth
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/profile$', ProfileView.as_view(), name='account_profile'),
+    url(r'^accounts/profile/$', ProfileView.as_view(), name='account_profile'),
 
 
     url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
