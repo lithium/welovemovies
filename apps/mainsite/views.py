@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -24,5 +25,13 @@ def error500(request):
 
 
 class HomePageView(TemplateView):
-  template_name = 'homepage/index.html'
+    template_name = 'homepage/index.html'
+
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'user/profile.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProfileView, self).dispatch(request, *args, **kwargs)
+
 

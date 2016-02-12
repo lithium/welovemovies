@@ -17,6 +17,18 @@ settings_fragment = lambda f: globals().update(load_settings_fragment(f))
 ###
 
 INSTALLED_APPS = (
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # providers
+    # 'allauth.socialaccount.providers.amazon',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.twitter',
+
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

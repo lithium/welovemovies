@@ -7,7 +7,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
-from mainsite.views import HomePageView, error404, error500
+from mainsite.views import HomePageView, ProfileView, error404, error500
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -19,6 +19,10 @@ urlpatterns = [
 
     # Django Admin
     url(r'^staff/', include(admin.site.urls)),
+
+    # allauth
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/profile/$', ProfileView.as_view(), name='account_profile'),
 
     url(r'^$', HomePageView.as_view(), name='home'),
 ]
