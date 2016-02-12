@@ -3,4 +3,8 @@ Jinja2==2.8
 
 django-allauth==0.24.1
 
+git+https://github.com/concentricsky/django-cachemodel.git@v2.1.4
+
+IMDbPY==5.0
+
 
