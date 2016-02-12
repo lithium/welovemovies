@@ -1,0 +1,26 @@
+{
+  "name": "welovemovies",
+  "description": "365 Movies in 365 Days Challenge Tracker",
+  "version": "0.1.0",
+  "keywords": [],
+  "homepage": "",
+  "dependencies": {
+    "lodash": "~3.10.0"
+  },
+  "devDependencies": {
+    "browser-sync": "latest",
+    "browserify": "~7.0.2",
+    "grunt-autoprefixer": "latest",
+    "grunt-contrib-requirejs": "latest",
+    "grunt-contrib-sass": "latest",
+    "grunt-contrib-uglify": "^0.9.2",
+    "grunt-contrib-watch": "latest",
+    "grunt-env": "~0.4.4",
+    "grunt-inline": "^0.3.6",
+    "grunt-shell-spawn": "latest"
+  },
+  "readmeFilename": "README",
+  "scripts": {
+    "build": "grunt dist"
+  }
+}

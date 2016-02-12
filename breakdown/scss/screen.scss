@@ -1,0 +1,12 @@
+@import 'base';
+
+body {
+  background: map-get($colors, bodybackground);
+  color: map-get($colors, bodycopy);
+  font-family: $font-family;
+  font-size: $font-size;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+

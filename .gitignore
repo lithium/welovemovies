@@ -1,0 +1,19 @@
+./settings_fragments/
+*.sqlite*
+.*.sw*
+*~
+*.pyc
+env/
+logs/
+node_modules/
+.idea/
+staticfiles/
+mediafiles/
+*.sass-cache
+.DS_Store
+AppleDouble
+*.map
+
+
+# gulp output files
+breakdown/static/css/screen.css
