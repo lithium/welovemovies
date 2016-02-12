@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from mainsite.views import HomePageView, ProfileView, error404, error500
+from welovemovies.api_views import ImdbSearch
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -22,7 +23,11 @@ urlpatterns = [
 
     # allauth
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/profile/$', ProfileView.as_view(), name='account_profile'),
+    url(r'^accounts/profile$', ProfileView.as_view(), name='account_profile'),
+
+
+    url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
+
 
     url(r'^$', HomePageView.as_view(), name='home'),
 ]

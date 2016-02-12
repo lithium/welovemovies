@@ -3,6 +3,7 @@ Jinja2==2.8
 
 django-allauth==0.24.1
 django-object-actions==0.7.0
+djangorestframework==3.3.2
 
 git+https://github.com/concentricsky/django-cachemodel.git@v2.1.4
 

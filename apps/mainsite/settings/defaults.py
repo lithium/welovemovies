@@ -37,6 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_object_actions',
+    'rest_framework',
+
 
     'wlmuser',
     'welovemovies',
@@ -165,3 +167,12 @@ settings_fragment('authentication')
 ###
 
 settings_fragment('email')
+
+
+###
+#
+# Django Rest Framework
+#
+###
+
+settings_fragment('rest_framework')
