@@ -17,10 +17,12 @@
     "grunt-contrib-watch": "latest",
     "grunt-env": "~0.4.4",
     "grunt-inline": "^0.3.6",
-    "grunt-shell-spawn": "latest"
+    "grunt-shell-spawn": "latest",
+    "grunt-cli": "latest"
   },
   "readmeFilename": "README",
   "scripts": {
-    "build": "grunt dist"
+    "build": "grunt dist",
+    "grunt": "grunt"
   }
 }

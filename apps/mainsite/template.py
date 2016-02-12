@@ -8,6 +8,6 @@ def jinja2_environment(**options):
     env = Environment(**options)
     env.globals.update({
         'static': staticfiles_storage.url,
-        'url': reverse,
+        'reverse': reverse,
     })
     return env

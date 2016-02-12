@@ -1,12 +1,14 @@
-@import 'base';
+#navbar-user-dropdown {
+    margin-left: 1em;
+}
 
-body {
-  background: map-get($colors, bodybackground);
-  color: map-get($colors, bodycopy);
-  font-family: $font-family;
-  font-size: $font-size;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+#navbar-search {
+    margin-left: 1em;
 }
 
 
+#navbar-search span.input-group-addon button {
+    border: none;
+    padding: 0 0 0 0;
+    background-color: rgba(0,0,0,0);
+}
