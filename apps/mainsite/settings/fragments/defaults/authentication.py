@@ -11,7 +11,7 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'wlmuser.WlmUser'
 
 LOGIN_REDIRECT_URL = '/accounts/profile/'
 LOGIN_URL = '/accounts/login/'
