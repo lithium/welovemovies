@@ -51,9 +51,9 @@
                     </ul>
                     {% endif %}
 
-                    <form class="form-inline pull-xs-right" id="navbar-search">
+                    <form class="form-inline pull-xs-right" id="navbar-search" action="{{ reverse('search_results') }}" method="get">
                         <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Search">
+                            <input class="form-control" type="text" placeholder="Search" name="q" value="{%if search_query%}{{search_query}}{%endif%}">
                             <span class="input-group-addon"><button type="submit"> <i class="fa fa-search fa-fw"></i> </button> </span>
                         </div>
                     </form>

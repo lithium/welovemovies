@@ -19,3 +19,8 @@ class SearchResults(ListView):
         results = imdb.search_movie(q)
         serializer = ImdbResultsSerializer(results, many=True, context={'request': self.request})
         return serializer.data
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchResults, self).get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context

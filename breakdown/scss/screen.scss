@@ -16,3 +16,19 @@
 #body-content {
     padding-top: 5em;
 }
+
+
+
+.search-results-container {
+    h2 {
+        margin-bottom: 1em;
+        span {
+            color: #0275d8;
+        }
+    }
+}
+
+.search-result {
+    margin-bottom: 2em;
+    border-bottom: 1px solid rgba(86,61,124,.2);
+}
