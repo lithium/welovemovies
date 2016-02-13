@@ -1,5 +1,6 @@
 from allauth.socialaccount import providers
 from allauth.socialaccount.templatetags.socialaccount import provider_login_url
+from django.contrib.messages import get_messages
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.urlresolvers import reverse
 from jinja2 import Environment
@@ -13,5 +14,6 @@ def jinja2_environment(**options):
         'static': staticfiles_storage.url,
         'reverse': reverse,
         'get_social_providers': providers.registry.get_list,
+        'get_messages': get_messages,
     })
     return env

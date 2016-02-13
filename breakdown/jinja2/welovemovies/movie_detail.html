@@ -6,7 +6,15 @@
 
     <div class="row">
         <div class="col-sm-3">
-            <img src="{{movie.cached_large_cover_url}}" height="300">
+            <img src="{{movie.cached_large_cover_url}}" width="197">
+            <div class="btn-group watch-actions" role="group">
+                <button type="button" class="btn btn-secondary" data-toggle="collapse" href="#viewing-form" aria-expanded="false" aria-controls="viewing-form">
+                    Will watch it
+                </button>
+                <a class="btn btn-secondary" href="#">
+                    Saw it
+                </a>
+            </div>
         </div>
         <div class="col-sm-9">
             <h2>{{movie.title}}{%if movie.year%} ({{movie.year}}){%endif%}</h2>
@@ -18,5 +26,33 @@
         </div>
     </div>
 
+    <div class="row collapse" id="viewing-form">
+        <div class="col-sm-4">
+
+            <div class="card card-block">
+                <form method="POST" action="{{ reverse('movie_schedule', kwargs={'movieID': movie.imdb_id}) }}">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+                    <fieldset class="form-group">
+                        <label for="id_scheduled_for">When will you watch it?</label>
+                        <input type="text" id="id_scheduled_for" name="scheduled_for" placeholder="When I get to it">
+                    </fieldset>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+{%endblock%}
+
+{%block extrascripts%}
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    var picker = new Pikaday({
+        field: document.getElementById('id_scheduled_for'),
+        format: 'MMM D, YYYY',
+    });
+});
+</script>
 {%endblock%}

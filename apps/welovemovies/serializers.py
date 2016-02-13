@@ -2,6 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 from hashlib import md5
 
+
 class ImdbResultsSerializer(serializers.Serializer):
     id = serializers.CharField()
     kind = serializers.CharField()

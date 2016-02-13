@@ -105,9 +105,22 @@ class Viewing(DefaultModel):
         (STATUS_WATCHED, 'Watched'),
         (STATUS_REWATCHED, 'Re-watched'),
     )
+
+    RATING_LOVE = 'love'
+    RATING_LIKE = 'like'
+    RATING_HATE = 'hate'
+    RATING_HATELIKE = 'hatelike'
+    RATING_CHOICES = (
+        (RATING_LOVE, 'Loved it'),
+        (RATING_LIKE, 'Liked it'),
+        (RATING_HATE, 'Hated it'),
+        (RATING_HATELIKE, 'Hate myself for liking it'),
+    )
     viewer = models.ForeignKey(settings.AUTH_USER_MODEL)
     movie = models.ForeignKey('welovemovies.Movie')
     status = models.CharField(max_length=254, choices=STATUS_CHOICES, default=STATUS_UNWATCHED)
     viewed_on = models.DateField(blank=True, null=True)
+    scheduled_for = models.DateField(blank=True, null=True)
+    rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
 
 
