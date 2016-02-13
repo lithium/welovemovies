@@ -3,13 +3,12 @@ Main URL Configuration
 """
 
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from mainsite.views import HomePageView, ProfileView, error404, error500
-from welovemovies.api_views import ImdbSearch
-from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing
+from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -29,6 +28,8 @@ urlpatterns = [
 
     url(r'^search$', SearchResults.as_view(), name='search_results'),
     # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
+
+    url(r'^movies$', ViewingList.as_view(), name='my_movies'),
 
     url(r'^movie/(?P<movieID>[^/]+)$', MovieDetail.as_view(), name='movie_detail'),
     url(r'^movie/(?P<movieID>[^/]+)/schedule$', ScheduleViewing.as_view(), name='movie_schedule'),

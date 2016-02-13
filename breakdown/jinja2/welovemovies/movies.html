@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary">Watched ({{watched|length}})</button>
+        <button type="button" class="btn btn-primary">Un-watched ({{unwatched|length}})</button>
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    {% for viewing in viewing_list %}
+    <div class="row">
+        <div class="col-sm-2">
+            <img src="{{ viewing.movie.cached_cover_url }}">
+        </div>
+        <div class="col-sm-10">
+            <h4>
+                <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.id}) }}">{{viewing.movie}}{%if viewing.year%} ({{viewing.year}}){%endif%}</a>
+                <span class="status status-{{viewing.status}}">{{viewing.get_status_display()}}</span>
+            </h4>
+            {%if viewing.status == 'unwatched' and viewing.scheduled_for %}<h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}</h5>{%endif%}
+            {%if viewing.movie.imdb_plot_outline%}<p>{{viewing.movie.imdb_plot_outline}}</p>{%endif%}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -129,9 +129,10 @@ class Viewing(DefaultModel):
     rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
 
     class Meta:
-        ordering = ('-scheduled_for',)
+        ordering = ('scheduled_for',)
 
     def publish(self):
         super(Viewing, self).publish()
         self.movie.publish()
+        self.viewer.publish()
 

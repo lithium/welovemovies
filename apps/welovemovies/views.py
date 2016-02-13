@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import ListView, DetailView, FormView, TemplateView
 
 from welovemovies.forms import ScheduleViewingForm
 from welovemovies.helpers import ImdbHelper
@@ -79,3 +79,20 @@ class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
         else:
             messages.success(self.request, u"Scheduled to view")
         return super(ScheduleViewing, self).form_valid(form)
+
+
+class ViewingList(LoginRequiredMixin, TemplateView):
+    model = Viewing
+    template_name = 'welovemovies/movies.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewingList, self).get_context_data(**kwargs)
+        context.update({
+            'viewing_list': self.request.user.cached_viewings(),
+            'watched': self.request.user.watched_movies(),
+            'unwatched': self.request.user.unwatched_movies(),
+        })
+        return context
+
+
+
