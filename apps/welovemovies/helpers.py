@@ -38,12 +38,9 @@ class ImdbHelper(object):
     def download_image(self, image_url):
         store = DefaultStorage()
         storage_name = 'imdb/image/{}'.format(md5(image_url).hexdigest())
-        # storage_name = store.get_available_name(storage_name)
-
-        r = requests.get(image_url, stream=True)
-        if r.status_code == 200:
-            r.raw.decode_content = True
-            store.save(storage_name, r.raw)
-            # with store.open(storage_name, 'wb') as storage_fh:
-            #     shutil.copyfileobj(r.raw, storage_fh)
+        if not store.exists(storage_name):
+            r = requests.get(image_url, stream=True)
+            if r.status_code == 200:
+                r.raw.decode_content = True
+                store.save(storage_name, r.raw)
 
