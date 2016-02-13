@@ -42,6 +42,19 @@ class MovieDetail(DetailView):
             movie.fetch_imdb()
         return movie
 
+    def get_context_data(self, **kwargs):
+        context = super(MovieDetail, self).get_context_data(**kwargs)
+        viewing = None
+        try:
+            viewing = Viewing.cached.get(movie=self.get_object(), viewer=self.request.user)
+        except Viewing.DoesNotExist:
+            pass
+
+        context.update({
+            'viewing': viewing
+        })
+        return context
+
 
 class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
     model = Movie

@@ -1,5 +1,6 @@
 from hashlib import md5
 
+import cachemodel
 from django.conf import settings
 from django.db import models
 
@@ -67,6 +68,10 @@ class Movie(DefaultModel):
             self.save()
             return True
 
+    @cachemodel.cached_method(auto_publish=True)
+    def cached_viewings(self):
+        return self.viewing_set.all()
+
     @property
     def cached_cover_url(self):
         if self.cover_url:
@@ -123,4 +128,10 @@ class Viewing(DefaultModel):
     scheduled_for = models.DateField(blank=True, null=True)
     rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
 
+    class Meta:
+        ordering = ('-scheduled_for',)
+
+    def publish(self):
+        super(Viewing, self).publish()
+        self.movie.publish()
 

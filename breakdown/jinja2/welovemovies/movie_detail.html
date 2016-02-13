@@ -8,9 +8,13 @@
         <div class="col-sm-3">
             <img src="{{movie.cached_large_cover_url}}" width="197">
             <div class="btn-group watch-actions" role="group">
+                {% if viewing %}
+                <a class="btn btn-secondary" href="#">Saved</a>
+                {% else %}
                 <button type="button" class="btn btn-secondary" data-toggle="collapse" href="#viewing-form" aria-expanded="false" aria-controls="viewing-form">
                     Will watch it
                 </button>
+                {% endif %}
                 <a class="btn btn-secondary" href="#">
                     Saw it
                 </a>
@@ -43,6 +47,20 @@
 
     </div>
 
+</div>
+
+<div class="container">
+    {%for viewing in movie.cached_viewings()%}
+    <div class="row">
+        {%if viewing.status == 'unwatched'%}
+        <p>{%if viewing.viewer == request.user%}You want{%else%}{{viewing.viewer}} wants{%endif%} to watch this{%if viewing.scheduled_for%} on {{viewing.scheduled_for.strftime("%b %d, %Y")}}{%endif%}.</p>
+        {%elif viewing.status == 'watched' or viewing.status == 'rewatched'%}
+        <p>{%if viewing.viewer == request.user%}You want{%else%}{{viewing.viewer}} wants{%endif%} {%if viewing.status == 'rewatched'%}re-{%endif%}watched this{%if viewing.viewed_on%} on {{viewing.viewed_on.strftime("%b %d, %Y")}}{%endif%}.</p>
+        {%else%}
+        <p>{{viewing}}</p>
+        {%endif%}
+    </div>
+    {%endfor%}
 </div>
 {%endblock%}
 
