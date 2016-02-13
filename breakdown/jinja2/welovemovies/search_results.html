@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{%block content%}
+<div class="container">
+
+    {% for result in results %}
+    <div class="card">
+        <div class="card-block">
+            <h4 class="card-title">{{result.title}}</h4>
+            <h6 class="card-subtitle text-muted">{{", ".join(result.genres)}}</h6>
+        </div>
+        <img src="{{result.cover_url}}">
+        <div class="card-block">
+            <p class="card-text"> {{result.cover_url}} {{result.plot_outline}}</p>
+            <a href="{{result.url}}" class="card-link">IMDb</a>
+            <a href="#" class="card-link">Watch</a>
+        </div>
+    </div>
+    {%endfor%}
+
+</div>
+{%endblock%}

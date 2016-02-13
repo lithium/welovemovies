@@ -13,6 +13,6 @@ class ImdbResultsSerializer(serializers.Serializer):
             'url': "http://imdb.com/title/tt{}/".format(imdb_movie.getID()),
         }
         for key in ('kind', 'year', 'title', 'cover url', 'genres', 'rating', 'plot outline'):
-            representation[key] = imdb_movie.get(key)
+            representation[key.replace(' ','_')] = imdb_movie.get(key)
         return representation
 
