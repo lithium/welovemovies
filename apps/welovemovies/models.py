@@ -137,3 +137,12 @@ class Viewing(DefaultModel):
         self.movie.publish()
         self.viewer.publish()
 
+
+class Schedule(cachemodel.CacheModel):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    challenge = models.ForeignKey('challenge.Challenge')
+    week_days = models.CommaSeparatedIntegerField(max_length=254, default=(1,1,1,1,1,1,1))
+
+    class Meta:
+        unique_together = ('challenge', 'owner')
+
