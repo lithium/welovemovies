@@ -102,12 +102,13 @@
 
         <div class="col-sm-4">
             <div class="card card-block">
-                <h1>&nbsp;</h1>
-                <h6 class="text-muted">Favorite Actor (#)</h6>
+                <h1>{{request.user.favorite_year[0]}}</h1>
+                <h6 class="text-muted">Favorite Year ({{request.user.favorite_year[1]}})</h6>
             </div>
         </div>
 
     </div>
+
 </div>
 
 {%endblock%}

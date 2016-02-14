@@ -64,6 +64,10 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         if len(d) > 0:
             return d[0]
 
+    @cachemodel.cached_method(auto_publish=False)
+    def favorite_genres(self):
+        return self._favorite_movie_property('genres')
+
     @property
     def favorite_genre(self):
         g = self.favorite_genres()
@@ -71,14 +75,30 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
             return g[0]
 
     @cachemodel.cached_method(auto_publish=False)
-    def favorite_genres(self):
-        return self._favorite_movie_property('genres')
+    def favorite_years(self):
+        return self._favorite_movie_property('year')
+
+    @property
+    def favorite_year(self):
+        g = self.favorite_years()
+        if len(g) > 0:
+            return g[0]
+
+    @cachemodel.cached_method(auto_publish=False)
+    def favorite_decades(self):
+        return self._favorite_movie_property('decade')
 
     def _favorite_movie_property(self, prop_name):
         index = {}
         for v in self.cached_viewings():
-            for p in getattr(v.movie, prop_name):
-                index[p] = index.get(p, 0)+1
+            val = getattr(v.movie, prop_name)
+            try:
+                val_iter = iter(val)
+                for p in val_iter:
+                    index[p] = index.get(p, 0)+1
+            except TypeError:
+                index[val] = index.get(val, 0)+1
+
         sorted_items = sorted(index.items(), lambda x,y: cmp(y[1], x[1]))
         # ret = map(lambda l: {prop_name: l[0], 'count': l[1]}, sorted_genres)
         return sorted_items

@@ -113,6 +113,10 @@ class Movie(DefaultModel):
         else:
             return "{}images/cover-placeholder.png".format(settings.STATIC_URL)
 
+    @property
+    def decade(self):
+        if self.year:
+            return self.year - (self.year % 10)
 
 class MovieDescription(DefaultModel):
     movie = models.ForeignKey('welovemovies.Movie')
