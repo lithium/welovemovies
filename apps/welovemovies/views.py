@@ -127,6 +127,8 @@ class ViewingList(LoginRequiredMixin, TemplateView):
             'viewing_list': self.request.user.cached_viewings(),
             'watched': self.request.user.watched_movies(),
             'unwatched': self.request.user.unwatched_movies(),
+            'challenge': self.request.user.active_challenge(self.request),
+            'schedule': self.request.user.cached_schedule(self.request),
         })
         return context
 
@@ -141,12 +143,10 @@ class MySchedule(LoginRequiredMixin, UpdateView):
         return self.request.user.cached_schedule(self.request)
 
     def get_context_data(self, **kwargs):
-        challenge = self.request.user.active_challenge(self.request)
-        schedule = self.request.user.cached_schedule(self.request)
         context = super(MySchedule, self).get_context_data(**kwargs)
         context.update({
-            'challenge': challenge,
-            'schedule': schedule,
+            'challenge': self.request.user.active_challenge(self.request),
+            'schedule': self.request.user.cached_schedule(self.request),
             'movies_watched': self.request.user.watched_count,
         })
         return context

@@ -4,10 +4,40 @@
 {% block content %}
 
 <div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card card-block">
+                <h1>{{request.user.watched_count}}</h1>
+                <h6 class="text-muted">Movies watched</h6>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card card-block">
+                <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
+                <h6 class="text-muted">Movies left</h6>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card card-block">
+                <h1>{{challenge.days_left}}</h1>
+                <h6 class="text-muted">Days left</h6>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card card-block">
+                <h1>~{{"{:0.1f}".format((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)}}</h1>
+                <h6 class="text-muted">Must watch per day</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
 
     <div class="btn-group" role="group">
-        <button type="button" class="btn btn-primary">Watched ({{watched|length}})</button>
-        <button type="button" class="btn btn-primary">Un-watched ({{unwatched|length}})</button>
+        <button type="button" class="btn btn-primary">Watched</button>
+        <button type="button" class="btn btn-primary">Un-watched</button>
     </div>
 
 </div>

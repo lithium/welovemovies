@@ -2,49 +2,86 @@
 
 
 {%block content %}
+
+
 <div class="container">
+    <h2>Weekly Schedule</h2>
+
     <div class="row">
         <div class="col-sm-3">
             <div class="card card-block">
-                <h1>{{movies_watched}}</h1>
-                <h6 class="text-muted">Movies Watched</h6>
+                <h1>{{schedule.total_per_week}}</h1>
+                <h6 class="text-muted">Scheduled per week</h6>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card card-block">
-                <h1>{{challenge.how_many_movies - movies_watched}}</h1>
-                <h6 class="text-muted">Movies Left</h6>
+                <h1>{{"{:0.0f}".format(schedule.avg_per_day * challenge.days_left)}}</h1>
+                <h6 class="text-muted">Scheduled total</h6>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card card-block">
-                <h1>{{challenge.days_left}}</h1>
-                <h6 class="text-muted">Days Left</h6>
+                <h1>{{"{:+0.0f}".format(schedule.avg_per_day * challenge.days_left - challenge.how_many_movies)}}</h1>
+                <h6 class="text-muted">Challenge goal</h6>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card card-block">
-                <h1>{{challenge.days_left - (challenge.how_many_movies - movies_watched)}}</h1>
-                <h6 class="text-muted">Progress</h6>
+                <h1>~{{"{:0.1f}".format(schedule.avg_per_day)}}</h1>
+                <h6 class="text-muted">Scheduled per day</h6>
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <form method="POST">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+            <div class="row">
+                <div class="col-xs-2">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Mon</label>
+                    <input type="text" class="form-control" value="{{form.monday.value()}}" name="monday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Tue</label>
+                    <input type="text" class="form-control" value="{{form.tuesday.value()}}" name="tuesday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Wed</label>
+                    <input type="text" class="form-control" value="{{form.wednesday.value()}}" name="wednesday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Thu</label>
+                    <input type="text" class="form-control" value="{{form.thursday.value()}}" name="thursday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Fri</label>
+                    <input type="text" class="form-control" value="{{form.friday.value()}}" name="friday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Sat</label>
+                    <input type="text" class="form-control" value="{{form.saturday.value()}}" name="saturday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">Sun</label>
+                    <input type="text" class="form-control" value="{{form.sunday.value()}}" name="sunday">
+                </div>
+                <div class="col-xs-1">
+                    <label class="form-control-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary">Save schedule</button>
+                </div>
+                <div class="col-xs-2">
+                </div>
+            </div>
+            <div class="row">
+            </div>
+        </form>
+    </div>
+
+
 </div>
 
 
-<div class="container">
-    <form method="POST">
-
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
-        {{form.as_p()}}
-        <button type="submit">save</button>
-    </form>
-</div>
-
-<div class="container">
-    <p>{{schedule.total_per_week}} per week</p>
-    <p>{{schedule.avg_per_day}} per day</p>
-    <p>{{schedule.avg_per_day * challenge.days_left}} estimated movies watched</p>
-    <p>{{schedule.avg_per_day * challenge.days_left - challenge.how_many_movies}} estimated progress</p>
-</div>
 {%endblock%}
