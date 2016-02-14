@@ -8,11 +8,9 @@
         <div class="col-sm-3">
             <img src="{{reverse('movie_cover', kwargs={'movieID': movie.imdb_id})}}?size=full" width="197">
             <div class="btn-group watch-actions" role="group">
-                {% if not viewing %}
                 <button type="button" class="btn btn-secondary" data-toggle="collapse" href="#schedule-viewing-form" aria-expanded="false" aria-controls="schedule-viewing-form">
                     Will watch it
                 </button>
-                {% endif %}
                 <button type="button" class="btn btn-secondary" data-toggle="collapse" href="#record-viewing-form" aria-expanded="false" aria-controls="record-viewing-form">
                     Saw it
                 </button>

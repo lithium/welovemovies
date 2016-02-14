@@ -39,7 +39,11 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         return len(self.watched_movies())
 
     def unwatched_movies(self):
-        return filter(lambda v: v.status == Viewing.STATUS_UNWATCHED, self.cached_viewings())
+        filtered = filter(lambda v: v.status == Viewing.STATUS_UNWATCHED, self.cached_viewings())
+        scheduled = filter(lambda v: v.scheduled_for, filtered)
+        unscheduled = sorted(filter(lambda v: not v.scheduled_for, filtered), lambda x,y: cmp(x.movie.title,y.movie.title))
+        return scheduled + unscheduled
+
 
     @property
     def unwatched_count(self):
