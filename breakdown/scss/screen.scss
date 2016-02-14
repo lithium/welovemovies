@@ -1,8 +1,9 @@
 @import "_base.scss";
-
-@import "message";
+@import "_colors.scss";
 
 @import "navigation";
+@import "message";
+@import "form";
 
 @import "search_results";
 

@@ -15,10 +15,11 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         return self.viewing_set.all()
 
     def watched_movies(self):
-        return filter(lambda v: v in (Viewing.STATUS_WATCHED, Viewing.STATUS_REWATCHED), self.cached_viewings())
+        filtered =  filter(lambda v: v.status in (Viewing.STATUS_WATCHED, Viewing.STATUS_REWATCHED), self.cached_viewings())
+        return filtered
 
     def unwatched_movies(self):
-        return filter(lambda v: v  == Viewing.STATUS_UNWATCHED, self.cached_viewings())
+        return filter(lambda v: v.status == Viewing.STATUS_UNWATCHED, self.cached_viewings())
 
 
 

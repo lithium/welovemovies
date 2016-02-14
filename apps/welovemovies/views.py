@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import ListView, DetailView, FormView, TemplateView
+from django.utils import timezone
+from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView
 
-from welovemovies.forms import ScheduleViewingForm
+from welovemovies.forms import ScheduleViewingForm, RecordViewingForm
 from welovemovies.helpers import ImdbHelper
 from welovemovies.models import Movie, Viewing
 from welovemovies.serializers import ImdbResultsSerializer
@@ -57,9 +58,13 @@ class MovieDetail(DetailView):
 
 
 class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
-    model = Movie
     form_class = ScheduleViewingForm
     http_method_names = ['post']
+
+    def get_viewing(self):
+        movie = self.get_object()
+        viewing, created = Viewing.cached.get_or_create(viewer=self.request.user, movie=movie)
+        return viewing
 
     def get_success_url(self):
         return reverse('movie_detail', kwargs={'movieID': self.kwargs.get('movieID')})
@@ -69,9 +74,8 @@ class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_valid(self, form):
-        movie = self.get_object()
         scheduled_for = form.cleaned_data.get('scheduled_for')
-        viewing, created = Viewing.cached.get_or_create(viewer=self.request.user, movie=movie)
+        viewing = self.get_viewing()
         if scheduled_for:
             viewing.scheduled_for = scheduled_for
             viewing.save()
@@ -79,6 +83,39 @@ class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
         else:
             messages.success(self.request, u"Scheduled to view")
         return super(ScheduleViewing, self).form_valid(form)
+
+
+class RecordViewing(UpdateView):
+    model = Viewing
+    form_class = RecordViewingForm
+    http_method_names = ['post']
+
+    def get_movie(self):
+        try:
+            return Movie.cached.get(imdb_id=self.kwargs.get('movieID'))
+        except Movie.DoesNotExist:
+            raise Http404
+
+    def get_object(self):
+        movie = self.get_movie()
+        viewing, created = Viewing.cached.get_or_create(viewer=self.request.user, movie=movie)
+        return viewing
+
+    def get_success_url(self):
+        return reverse('movie_detail', kwargs={'movieID': self.kwargs.get('movieID')})
+
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_valid(self, form):
+        viewing = form.save(commit=False)
+        viewing.status = Viewing.STATUS_WATCHED
+        if not viewing.viewed_on:
+            viewing.viewed_on = timezone.now()
+        viewing.save()
+        return HttpResponseRedirect(self.get_success_url())
+
 
 
 class ViewingList(LoginRequiredMixin, TemplateView):
