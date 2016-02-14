@@ -1,5 +1,5 @@
 import cachemodel
-from django.contrib.auth.models import Group, AbstractUser
+from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
 
 from challenge.models import ActiveChallenge
@@ -7,6 +7,7 @@ from welovemovies.models import Viewing, Schedule
 
 
 class WlmUser(cachemodel.CacheModel, AbstractUser):
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'User'
