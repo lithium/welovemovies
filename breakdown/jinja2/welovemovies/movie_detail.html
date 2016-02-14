@@ -109,7 +109,7 @@
         {{ viewing.get_rating_display() }}.
             <span class="text-muted" data-toggle="collapse" href="#viewing-summary-{{viewing.pk}}" aria-expanded="false" aria-controls="viewing-summary-{{viewing.pk}}">review</span>
         </p>
-        <p id="viewing-summary-{{viewing.pk}}" class="collapse">{{viewing.summary}}</p>
+        <blockquote id="viewing-summary-{{viewing.pk}}" class="blockquote collapse"><p>{{viewing.summary}}</p></blockquote>
         {%else%}
         <p>{{viewing}}</p>
         {%endif%}
