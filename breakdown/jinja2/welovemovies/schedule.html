@@ -83,5 +83,31 @@
 
 </div>
 
+<div class="container">
+    <div class="row card-stats">
+
+        <div class="col-sm-4">
+            <div class="card card-block">
+                <h1>{{request.user.favorite_director[0]}}</h1>
+                <h6 class="text-muted">Favorite Director ({{request.user.favorite_director[1]}})</h6>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card card-block">
+                <h1>{{request.user.favorite_genre[0]}}</h1>
+                <h6 class="text-muted">Favorite Genre ({{request.user.favorite_genre[1]}})</h6>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card card-block">
+                <h1>&nbsp;</h1>
+                <h6 class="text-muted">Favorite Actor (#)</h6>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 {%endblock%}

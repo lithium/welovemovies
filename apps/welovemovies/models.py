@@ -163,6 +163,8 @@ class Viewing(DefaultModel):
         super(Viewing, self).publish()
         self.movie.publish()
         self.viewer.publish()
+        self.viewer.publish_method('favorite_directors')
+        self.viewer.publish_method('favorite_genres')
 
 
 class Schedule(cachemodel.CacheModel):

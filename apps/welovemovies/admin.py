@@ -24,6 +24,7 @@ class MovieMetadataInline(admin.TabularInline):
 
 class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
     objectactions = ('fetch_imdb',)
+    actions = ('fetch_imdb_bulk',)
 
     list_display = ('title', 'year')
     search_fields = ('title', 'year', 'imdb_id', 'imdb_plot_outline')
@@ -44,6 +45,10 @@ class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
     inlines = [
         MovieMetadataInline
     ]
+
+    def fetch_imdb_bulk(self, request, qs):
+        for obj in qs:
+            obj.fetch_imdb()
 
     def fetch_imdb(self, request, obj):
         obj.fetch_imdb()

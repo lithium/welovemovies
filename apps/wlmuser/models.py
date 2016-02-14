@@ -45,11 +45,40 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
     def unwatched_count(self):
         return len(self.unwatched_movies())
 
-
     def active_challenge(self, request):
         site = Site.objects.get_current(request)
         active = ActiveChallenge.cached.get(site=site)
         return active.challenge
+
+    @cachemodel.cached_method(auto_publish=False)
+    def favorite_directors(self):
+        return self._favorite_movie_property('directors')
+
+    @property
+    def favorite_director(self):
+        d = self.favorite_directors()
+        if len(d) > 0:
+            return d[0]
+
+    @property
+    def favorite_genre(self):
+        g = self.favorite_genres()
+        if len(g) > 0:
+            return g[0]
+
+    @cachemodel.cached_method(auto_publish=False)
+    def favorite_genres(self):
+        return self._favorite_movie_property('genres')
+
+    def _favorite_movie_property(self, prop_name):
+        index = {}
+        for v in self.cached_viewings():
+            for p in getattr(v.movie, prop_name):
+                index[p] = index.get(p, 0)+1
+        sorted_items = sorted(index.items(), lambda x,y: cmp(y[1], x[1]))
+        # ret = map(lambda l: {prop_name: l[0], 'count': l[1]}, sorted_genres)
+        return sorted_items
+
 
 
 
