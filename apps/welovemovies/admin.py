@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django_object_actions import DjangoObjectActions
 
-from welovemovies.models import Movie
+from welovemovies.models import Movie, MovieMetadata
 
 
 class MovieAdminForm(forms.ModelForm):
@@ -13,6 +13,13 @@ class MovieAdminForm(forms.ModelForm):
         fields = ('is_active',
                   'title', 'year', 'runtime',
                   'imdb_id', 'imdb_plot_outline', 'imdb_rating', 'imdb_votes', 'cover_url', 'large_cover_url')
+
+
+class MovieMetadataInline(admin.TabularInline):
+    model = MovieMetadata
+    extra = 0
+    fields = ('key', 'value', 'source', 'source_id')
+    readonly_fields = ('key', 'value', 'source', 'source_id')
 
 
 class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
@@ -34,6 +41,9 @@ class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
             'fields': ('imdb_id', 'imdb_plot_outline', 'imdb_rating', 'imdb_votes', 'cover_url', 'large_cover_url'),
         }),
     )
+    inlines = [
+        MovieMetadataInline
+    ]
 
     def fetch_imdb(self, request, obj):
         obj.fetch_imdb()

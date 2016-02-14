@@ -24,6 +24,10 @@
             <h6 class="text-muted">{{", ".join(movie.genres)}}</h6>
             {%endif%}
 
+            {%if movie.directors%}
+            <h6 class="text-muted"><strong>Directed by:</strong> {{", ".join(movie.directors)}}</h6>
+            {%endif%}
+
             <p class="plot-outline">{{movie.imdb_plot_outline}}</p>
         </div>
     </div>

@@ -66,11 +66,36 @@ class Movie(DefaultModel):
             # if self.large_cover_url:
             #     imdb.download_image(self.large_cover_url)
             self.save()
+
+            for director in imdb_movie.get('director'):
+                meta, created = MovieMetadata.cached.get_or_create(movie=self, key='director', source='imdb', source_id=director.getID())
+                if created:
+                    meta.value = director.get('name')
+                    meta.save()
+
+            for genre in imdb_movie.get('genres'):
+                meta, created = MovieMetadata.cached.get_or_create(movie=self, key='genre', source='imdb', value=genre)
             return True
 
     @cachemodel.cached_method(auto_publish=True)
     def cached_viewings(self):
         return self.viewing_set.all()
+
+    @cachemodel.cached_method(auto_publish=True)
+    def cached_directors(self):
+        return self.moviemetadata_set.filter(key='director')
+
+    @cachemodel.cached_method(auto_publish=True)
+    def cached_genres(self):
+        return self.moviemetadata_set.filter(key='genre')
+
+    @property
+    def directors(self):
+        return map(lambda m: m.value, self.cached_directors())
+
+    @property
+    def genres(self):
+        return map(lambda m: m.value, self.cached_genres())
 
     @property
     def cached_cover_url(self):
@@ -97,6 +122,7 @@ class MovieDescription(DefaultModel):
 class MovieMetadata(DefaultModel):
     movie = models.ForeignKey('welovemovies.Movie')
     source = models.CharField(max_length=254, blank=True, null=True)
+    source_id = models.CharField(max_length=254, blank=True, null=True)
     key = models.CharField(max_length=254, db_index=True)
     value = models.TextField()
 
