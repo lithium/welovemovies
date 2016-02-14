@@ -139,10 +139,40 @@ class Viewing(DefaultModel):
 
 
 class Schedule(cachemodel.CacheModel):
+    FIELD_NAMES = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     challenge = models.ForeignKey('challenge.Challenge')
-    week_days = models.CommaSeparatedIntegerField(max_length=254, default=(1,1,1,1,1,1,1))
+    monday = models.IntegerField(default=1)
+    tuesday = models.IntegerField(default=1)
+    wednesday = models.IntegerField(default=1)
+    thursday = models.IntegerField(default=1)
+    friday = models.IntegerField(default=1)
+    saturday = models.IntegerField(default=1)
+    sunday = models.IntegerField(default=1)
 
     class Meta:
         unique_together = ('challenge', 'owner')
 
+    def publish(self):
+        super(Schedule, self).publish()
+        self.owner.publish()
+
+    def get_day(self, weekday):
+        """
+        Return the value for the 0..6 weekday
+        """
+        return getattr(self, Schedule.FIELD_NAMES[weekday])
+
+    def set_day(self, weekday, value):
+        """
+        Sets the schedule the 0..6 weekday
+        """
+        return setattr(self, Schedule.FIELD_NAMES[weekday], value)
+
+    @property
+    def total_per_week(self):
+        return sum(self.get_day(i) for i in range(0,7))
+
+    @property
+    def avg_per_day(self):
+        return self.total_per_week/7.0

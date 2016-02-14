@@ -8,7 +8,7 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from mainsite.views import HomePageView, ProfileView, error404, error500
-from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing
+from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing, MySchedule
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -30,10 +30,12 @@ urlpatterns = [
     # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
 
     url(r'^movies$', ViewingList.as_view(), name='my_movies'),
-
     url(r'^movie/(?P<movieID>[^/]+)$', MovieDetail.as_view(), name='movie_detail'),
     url(r'^movie/(?P<movieID>[^/]+)/schedule$', ScheduleViewing.as_view(), name='movie_schedule'),
     url(r'^movie/(?P<movieID>[^/]+)/record$', RecordViewing.as_view(), name='movie_record'),
+
+
+    url(r'^schedule$', MySchedule.as_view(), name='my_schedule'),
 
     url(r'^$', HomePageView.as_view(), name='home'),
 ]

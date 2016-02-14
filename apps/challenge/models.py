@@ -1,3 +1,6 @@
+import datetime
+from django.utils import timezone
+
 from mainsite.models import DefaultModel
 from django.db import models
 
@@ -16,6 +19,12 @@ class Challenge(DefaultModel):
     def how_many_days(self):
         return (self.end - self.start).days+1
 
+    @property
+    def days_left(self, whence=None):
+        if whence is None:
+            whence = timezone.now().date()
+        return (self.end - whence).days+1
+
 
 class ActiveChallenge(DefaultModel):
     challenge = models.ForeignKey('challenge.Challenge')
@@ -23,3 +32,4 @@ class ActiveChallenge(DefaultModel):
 
     class Meta:
         unique_together = ('challenge', 'site')
+

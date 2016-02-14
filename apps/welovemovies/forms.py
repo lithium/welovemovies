@@ -1,7 +1,7 @@
 
 from django import forms
 
-from welovemovies.models import Viewing
+from welovemovies.models import Viewing, Schedule
 
 
 class ScheduleViewingForm(forms.Form):
@@ -14,3 +14,10 @@ class RecordViewingForm(forms.ModelForm):
     class Meta:
         model = Viewing
         fields = ('viewed_on', 'rating', 'summary')
+
+
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields = ('monday','tuesday','wednesday','thursday','friday','saturday','sunday')
+

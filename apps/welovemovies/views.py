@@ -1,13 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView
 
-from welovemovies.forms import ScheduleViewingForm, RecordViewingForm
+from welovemovies.forms import ScheduleViewingForm, RecordViewingForm, ScheduleForm
 from welovemovies.helpers import ImdbHelper
-from welovemovies.models import Movie, Viewing
+from welovemovies.models import Movie, Viewing, Schedule
 from welovemovies.serializers import ImdbResultsSerializer
 
 
@@ -117,7 +117,6 @@ class RecordViewing(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-
 class ViewingList(LoginRequiredMixin, TemplateView):
     model = Viewing
     template_name = 'welovemovies/movies.html'
@@ -132,4 +131,22 @@ class ViewingList(LoginRequiredMixin, TemplateView):
         return context
 
 
+class MySchedule(LoginRequiredMixin, UpdateView):
+    model = Schedule
+    template_name = 'welovemovies/schedule.html'
+    form_class = ScheduleForm
+    success_url = reverse_lazy('my_schedule')
 
+    def get_object(self, queryset=None):
+        return self.request.user.cached_schedule(self.request)
+
+    def get_context_data(self, **kwargs):
+        challenge = self.request.user.active_challenge(self.request)
+        schedule = self.request.user.cached_schedule(self.request)
+        context = super(MySchedule, self).get_context_data(**kwargs)
+        context.update({
+            'challenge': challenge,
+            'schedule': schedule,
+            'movies_watched': self.request.user.watched_count,
+        })
+        return context
