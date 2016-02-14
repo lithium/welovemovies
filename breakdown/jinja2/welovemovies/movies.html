@@ -4,29 +4,41 @@
 {% block content %}
 
 <div class="container">
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="row card-stats">
+        <div class="col-sm-2">
             <div class="card card-block">
                 <h1>{{request.user.watched_count}}</h1>
-                <h6 class="text-muted">Movies watched</h6>
+                <h6 class="text-muted">Watched</h6>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="card card-block">
                 <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
                 <h6 class="text-muted">Movies left</h6>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="card card-block">
                 <h1>{{challenge.days_left}}</h1>
                 <h6 class="text-muted">Days left</h6>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="card card-block">
-                <h1>~{{"{:0.1f}".format((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)}}</h1>
-                <h6 class="text-muted">Must watch per day</h6>
+                <h1>~{{"{:0.0f}".format(((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)*7)}}</h1>
+                <h6 class="text-muted">Per week</h6>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-block">
+                <h1>{{request.user.unwatched_count}}</h1>
+                <h6 class="text-muted">Unwatched</h6>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-block">
+                <h1>{{(challenge.how_many_movies - request.user.watched_count) - request.user.unwatched_count}}</h1>
+                <h6 class="text-muted">Needed</h6>
             </div>
         </div>
     </div>
@@ -52,9 +64,11 @@
 
 {% macro viewing_row(viewing) %}
 
-<div class="row">
-    <div class="col-sm-2">
-        <img src="{{ viewing.movie.cached_cover_url }}">
+<div class="row viewing">
+    <div class="col-sm-2 cover">
+        <div class="card card-box">
+            <img src="{{ viewing.movie.cached_cover_url }}">
+        </div>
     </div>
     <div class="col-sm-10">
         <h4>

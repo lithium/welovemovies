@@ -41,6 +41,10 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
     def unwatched_movies(self):
         return filter(lambda v: v.status == Viewing.STATUS_UNWATCHED, self.cached_viewings())
 
+    @property
+    def unwatched_count(self):
+        return len(self.unwatched_movies())
+
 
     def active_challenge(self, request):
         site = Site.objects.get_current(request)
