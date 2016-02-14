@@ -1,9 +1,12 @@
+from hashlib import md5
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView
+from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView, RedirectView
 
 from welovemovies.forms import ScheduleViewingForm, RecordViewingForm, ScheduleForm
 from welovemovies.helpers import ImdbHelper
@@ -22,7 +25,7 @@ class SearchResults(LoginRequiredMixin, ListView):
             return []
 
         imdb = ImdbHelper()
-        results = imdb.search_movie(q)
+        results = imdb.search_movie(q, full_detail=False)
         serializer = ImdbResultsSerializer(results, many=True, context={'request': self.request})
         return serializer.data
 
@@ -151,3 +154,26 @@ class MySchedule(LoginRequiredMixin, UpdateView):
             'movies_watched': self.request.user.watched_count,
         })
         return context
+
+
+class CachedCoverImage(RedirectView):
+    http_method_names = ['get']
+
+    def get_redirect_url(self, *args, **kwargs):
+        imdb = ImdbHelper()
+        imdb_movie = imdb.get_movie(kwargs.get('movieID'))
+
+        size = self.request.GET.get('size', '')
+
+        if size == 'full':
+            url = imdb_movie.get('full-size cover url')
+        else:
+            url = imdb_movie.get('cover url')
+
+        if not url:
+            return "{}images/cover-placeholder.png".format(settings.STATIC_URL)
+
+        imdb.download_image(url)
+        digest = md5(url).hexdigest()
+        return "{}imdb/image/{}".format(settings.MEDIA_URL, digest)
+

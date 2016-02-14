@@ -67,7 +67,7 @@
 <div class="row viewing">
     <div class="col-sm-2 cover">
         <div class="card card-box">
-            <img src="{{ viewing.movie.cached_cover_url }}">
+            <img src="{{reverse('movie_cover', kwargs={'movieID': viewing.movie.imdb_id})}}" >
         </div>
     </div>
     <div class="col-sm-10">

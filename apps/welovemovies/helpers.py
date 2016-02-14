@@ -11,19 +11,21 @@ class ImdbHelper(object):
     def __init__(self, **kwargs):
         self.imdb = imdb.IMDb(**kwargs)
 
-    def search_movie(self, query, max_results=8):
+    def search_movie(self, query, max_results=8, full_detail=True):
         results = self.imdb.search_movie(query, results=max_results)
         filtered_results = filter(lambda r: r.get('kind') == 'movie', results)
-        full_results = map(lambda r: self.get_movie(r.getID()), filtered_results)
-        return full_results
+        if full_detail:
+            full_results = map(lambda r: self.get_movie(r.getID()), filtered_results)
+            return full_results
+        return filtered_results
 
     def cache_movie(self, movieID):
         full_movie = self.imdb.get_movie(movieID)
         cache.set(self.cache_key(movieID), full_movie)
 
-        cover_url = full_movie.get('cover url')
-        if cover_url:
-            self.download_image(cover_url)
+        # cover_url = full_movie.get('cover url')
+        # if cover_url:
+        #     self.download_image(cover_url)
         return full_movie
 
     def get_movie(self, movieID):
@@ -43,4 +45,5 @@ class ImdbHelper(object):
             if r.status_code == 200:
                 r.raw.decode_content = True
                 store.save(storage_name, r.raw)
+                return storage_name
 
