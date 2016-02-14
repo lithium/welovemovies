@@ -9,11 +9,13 @@ class ScheduleViewingForm(forms.Form):
 
 
 class RecordViewingForm(forms.ModelForm):
+    viewed_on = forms.DateField(input_formats=['%b %d, %Y'], required=False)
     summary = forms.CharField(widget=forms.Textarea)
+    seen_before = forms.BooleanField(required=False)
 
     class Meta:
         model = Viewing
-        fields = ('viewed_on', 'rating', 'summary')
+        fields = ('viewed_on', 'rating', 'summary', 'how_watched')
 
 
 class ScheduleForm(forms.ModelForm):

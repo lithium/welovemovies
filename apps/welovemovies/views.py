@@ -110,7 +110,8 @@ class RecordViewing(UpdateView):
 
     def form_valid(self, form):
         viewing = form.save(commit=False)
-        viewing.status = Viewing.STATUS_WATCHED
+        seen_before = form.cleaned_data.get('seen_before')
+        viewing.status = Viewing.STATUS_REWATCHED if seen_before else Viewing.STATUS_WATCHED
         if not viewing.viewed_on:
             viewing.viewed_on = timezone.now()
         viewing.save()

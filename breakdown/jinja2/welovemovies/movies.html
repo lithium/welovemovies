@@ -33,35 +33,42 @@
 </div>
 
 
-<div class="container">
-
-    <div class="btn-group" role="group">
-        <button type="button" class="btn btn-primary">Watched</button>
-        <button type="button" class="btn btn-primary">Un-watched</button>
-    </div>
-
-</div>
-
 
 <div class="container">
-
-    {% for viewing in viewing_list %}
-    <div class="row">
-        <div class="col-sm-2">
-            <img src="{{ viewing.movie.cached_cover_url }}">
-        </div>
-        <div class="col-sm-10">
-            <h4>
-                <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">{{viewing.movie}}{%if viewing.year%} ({{viewing.year}}){%endif%}</a>
-                <span class="status status-{{viewing.status}}">{{viewing.get_status_display()}}</span>
-            </h4>
-            {%if viewing.status == 'unwatched' and viewing.scheduled_for %}<h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}</h5>{%endif%}
-            {%if viewing.status == 'watched' and viewing.viewed_on %}<h5>Watched on {{viewing.viewed_on.strftime("%b %d, %Y")}}</h5>{%endif%}
-            {%if viewing.movie.imdb_plot_outline%}<p>{{viewing.movie.imdb_plot_outline}}</p>{%endif%}
-        </div>
-    </div>
+    <h2>Un-watched</h2>
+    {% for viewing in unwatched %}
+        {{ viewing_row(viewing) }}
     {% endfor %}
-
 </div>
 
+<div class="container">
+    <h2>Watched</h2>
+    {% for viewing in watched %}
+    {{ viewing_row(viewing) }}
+    {% endfor %}
+</div>
 {% endblock %}
+
+
+{% macro viewing_row(viewing) %}
+
+<div class="row">
+    <div class="col-sm-2">
+        <img src="{{ viewing.movie.cached_cover_url }}">
+    </div>
+    <div class="col-sm-10">
+        <h4>
+            <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">{{viewing.movie}}{%if viewing.year%} ({{viewing.year}}){%endif%}</a>
+        </h4>
+        {%if viewing.status == 'unwatched' and viewing.scheduled_for %}
+        <h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}</h5>
+        {%endif%}
+        {%if (viewing.status == 'watched' or viewing.status == 'rewatched') %}
+        <h5>{{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}
+            {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
+        </h5>
+        {%endif%}
+        {%if viewing.movie.imdb_plot_outline%}<p>{{viewing.movie.imdb_plot_outline}}</p>{%endif%}
+    </div>
+</div>
+{% endmacro %}
