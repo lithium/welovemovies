@@ -7,23 +7,6 @@
     <div class="row">
         <div class="col-sm-3">
             <img class="full-cover img-rounded" src="{{reverse('movie_cover', kwargs={'movieID': movie.imdb_id})}}?size=full">
-                {%if not viewing or not viewing.viewed_on%}
-                <button type="button" class="btn btn-secondary" data-toggle="collapse" href="#schedule-viewing-form" aria-expanded="false" aria-controls="schedule-viewing-form">
-                    {%if viewing and viewing.scheduled_for%}
-                    Scheduled for {{viewing.scheduled_for.strftime("%b %d")}}
-                    {%else%}
-                    Add to Schedule
-                    {%endif%}
-                </button>
-                <a class="btn btn-secondary" data-toggle="collapse" href="#record-viewing-form" aria-expanded="false" aria-controls="record-viewing-form">
-                    I watched this
-                </a>
-                {%else%}
-                <p>
-                    Watched on {{viewing.viewed_on.strftime("%b %d, %Y")}}.<br>
-                    {{viewing.get_rating_display()}}.
-                </p>
-                {%endif%}
         </div>
         <div class="col-sm-9">
             <h2>{{movie.title}}{%if movie.year%} ({{movie.year}}){%endif%}
@@ -43,76 +26,123 @@
         </div>
     </div>
 
-    <div class="row collapse" id="schedule-viewing-form">
-        <div class="col-sm-4">
+</div>
 
-            <div class="card card-block">
-                <form method="POST" action="{{ reverse('movie_schedule', kwargs={'movieID': movie.imdb_id}) }}">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
-                    <fieldset class="form-group">
-                        <label for="id_scheduled_for">When will you watch it?</label>
-                        <input type="text" class="form-control datepicker" id="id_scheduled_for" name="scheduled_for" placeholder="When I get to it" value="{{ viewing.scheduled_for.strftime('%b %d, %Y') if viewing.scheduled_for else ''}}">
-                    </fieldset>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
+<div class="container scheduling">
+
+    {%if not viewing or not viewing.viewed_on%}
+
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <p class="panel-title">
+                <a class="btn btn-secondary" data-parent="#accordion" data-toggle="collapse" href="#schedule-viewing-form" aria-expanded="false" aria-controls="schedule-viewing-form">
+                    {%if viewing and viewing.scheduled_for%}
+                    Scheduled for {{viewing.scheduled_for.strftime("%b %d")}}
+                    {%else%}
+                    Add to Schedule
+                    {%endif%}
+                </a>
+                </p>
+            </div>
+            <!-- schedule form -->
+            <div class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" id="schedule-viewing-form">
+                <div class="row">
+
+                <div class="col-sm-4">
+                    <div class="card card-block">
+                        <form method="POST" action="{{ reverse('movie_schedule', kwargs={'movieID': movie.imdb_id}) }}">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+                            <fieldset class="form-group">
+                                <label for="id_scheduled_for">When will you watch it?</label>
+                                <input type="text" class="form-control datepicker" id="id_scheduled_for" name="scheduled_for" placeholder="When I get to it" value="{{ viewing.scheduled_for.strftime('%b %d, %Y') if viewing.scheduled_for else ''}}">
+                            </fieldset>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <p class="panel-title">
+                <a class="btn btn-secondary" data-parent="#accordion" data-toggle="collapse" href="#record-viewing-form" aria-expanded="false" aria-controls="record-viewing-form">
+                    I watched this
+                </a>
+                </p>
+            </div>
+            <!-- record form -->
+            <div class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" id="record-viewing-form">
+                <div class="row">
+
+                <div class="col-sm-8">
+
+                    <div class="card card-block">
+                        <form method="POST" action="{{ reverse('movie_record', kwargs={'movieID': movie.imdb_id}) }}">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+                            <div class="form-inline">
+
+                                <fieldset class="form-group">
+                                    <label for="id_viewed_on">Watched on</label>
+                                    <input type="text" class="form-control datepicker" id="id_viewed_on" name="viewed_on" placeholder="{{now.strftime("%b %d, %Y")}}">
+                                </fieldset>
+
+                                <fieldset class="form-group">
+                                    <label for="id_how_watched">How did you watch it</label>
+                                    <input type="text" class="form-control" id="id_how_watched" name="how_watched" placeholder="Theater, Netflix, DVD">
+                                </fieldset>
+
+                                <fieldset class="form-group">
+                                    <input type="checkbox" class="form-control" id="id_seen_before" name="seen_before">
+                                    <label for="id_seen_before">I'd seen it before</label>
+                                </fieldset>
+                            </div>
+
+                            <fieldset class="form-group">
+                                <label class="form-control-label">Did you like it?</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="rating" id="id_rating_1" value="love" required>
+                                    Loved it
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="rating" id="id_rating_2" value="like">
+                                    Liked it
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="rating" id="id_rating_3" value="hate">
+                                    Hated it
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="rating" id="id_rating_4" value="hatelike">
+                                    Hate myself for liking it
+                                </label>
+                            </fieldset>
+
+                            <fieldset class="form-group">
+                                <textarea class="form-control" id="id_summary" name="summary" required placeholder="Provide your short review of the movie"></textarea>
+                            </fieldset>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row collapse" id="record-viewing-form">
-        <div class="col-sm-8">
-
-        <div class="card card-block">
-            <form method="POST" action="{{ reverse('movie_record', kwargs={'movieID': movie.imdb_id}) }}">
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
-                <div class="form-inline">
-
-                    <fieldset class="form-group">
-                        <label for="id_viewed_on">Watched on</label>
-                        <input type="text" class="form-control datepicker" id="id_viewed_on" name="viewed_on" placeholder="{{now.strftime("%b %d, %Y")}}">
-                    </fieldset>
-
-                    <fieldset class="form-group">
-                        <label for="id_how_watched">How did you watch it</label>
-                        <input type="text" class="form-control" id="id_how_watched" name="how_watched" placeholder="Theater, Netflix, DVD">
-                    </fieldset>
-
-                    <fieldset class="form-group">
-                        <input type="checkbox" class="form-control" id="id_seen_before" name="seen_before">
-                        <label for="id_seen_before">I'd seen it before</label>
-                    </fieldset>
-                </div>
-
-                    <fieldset class="form-group">
-                        <label class="form-control-label">Did you like it?</label>
-                        <label class="radio-inline">
-                            <input type="radio" name="rating" id="id_rating_1" value="love" required>
-                            Loved it
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="rating" id="id_rating_2" value="like">
-                            Liked it
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="rating" id="id_rating_3" value="hate">
-                            Hated it
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="rating" id="id_rating_4" value="hatelike">
-                            Hate myself for liking it
-                        </label>
-                    </fieldset>
-
-                <fieldset class="form-group">
-                    <textarea class="form-control" id="id_summary" name="summary" required placeholder="Provide your short review of the movie"></textarea>
-                </fieldset>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-        </div>
-        </div>
-    </div>
+{%else%}
+<p>
+    Watched on {{viewing.viewed_on.strftime("%b %d, %Y")}}.<br>
+    {{viewing.get_rating_display()}}.
+</p>
+{%endif%}
 
 </div>
+
 
 <h3 style="margin-top:2rem;">Viewings</h3>
 <div class="container">
