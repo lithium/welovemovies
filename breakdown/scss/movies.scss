@@ -15,7 +15,20 @@
 .row.viewing {
     margin-bottom: 2em;
 
-    .cover {
-        text-align: center;
+
+
+}
+
+.cover {
+    text-align: center;
+    .card {
+        min-width: 125px;
+        min-height: 140px;
     }
+
+}
+
+
+.imdb-link {
+        font-size: 0.75rem;
 }

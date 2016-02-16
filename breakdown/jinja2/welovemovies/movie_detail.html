@@ -17,7 +17,11 @@
             </div>
         </div>
         <div class="col-sm-9">
-            <h2>{{movie.title}}{%if movie.year%} ({{movie.year}}){%endif%}</h2>
+            <h2>{{movie.title}}{%if movie.year%} ({{movie.year}}){%endif%}
+                <span class="imdb-link">
+                <a href="http://imdb.com/title/tt{{viewing.movie.imdb_id}}" target="_blank">IMDb</a>
+                </span>
+            </h2>
             {%if movie.genres%}
             <h6 class="text-muted">{{", ".join(movie.genres)}}</h6>
             {%endif%}
