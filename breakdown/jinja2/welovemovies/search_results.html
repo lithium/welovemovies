@@ -3,24 +3,19 @@
 
 {%block content%}
 <div class="container search-results-container">
-    <h2>Movies matching <span>{{search_query}}</span></h2>
+    <h2>Movies matching &ldquo;<span>{{search_query}}</span>&rdquo;</h2>
 
     {% for result in results %}
-    <div class="container search-result">
-        <div class="row">
-            <div class="col-sm-2">
-                <img src="{{reverse('movie_cover', kwargs={'movieID': result.id})}}" >
-            </div>
-            <div class="col-sm-10">
-                <h4><a href="{{ reverse('movie_detail', kwargs={'movieID': result.id}) }}">{{result.long_imdb_title}}</a></h4>
-                {%if result.genres%}<h6 class="text-muted">{{", ".join(result.genres)}}</h6>{%endif%}
-                {%if result.plot_outline%}<p>{{result.plot_outline}}</p>{%endif%}
-            </div>
-        </div>
-        <div class="row">
-            <a target="_blank" href="{{result.url}}">IMDb</a>
-            <a href="#">Watch</a>
-        </div>
+    <div class="row search-result">
+            <a href="{{ reverse('movie_detail', kwargs={'movieID': result.id}) }}">
+            <img class="img-rounded pull-xs-left" src="{{reverse('movie_cover', kwargs={'movieID': result.id})}}">
+            </a>
+            <h4>
+                <a href="{{ reverse('movie_detail', kwargs={'movieID': result.id}) }}">{{result.title}}</a> ({{result.year}})
+                <a class="imdb-link" target="_blank" href="{{result.url}}">IMDb</a>
+            </h4>
+            {%if result.genres%}<h6 class="text-muted">{{", ".join(result.genres)}}</h6>{%endif%}
+            {%if result.plot_outline%}<p>{{result.plot_outline}}</p>{%endif%}
     </div>
     {%endfor%}
 
