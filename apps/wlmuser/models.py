@@ -1,6 +1,8 @@
 import cachemodel
+from django.conf import settings
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from challenge.models import ActiveChallenge
 from welovemovies.models import Viewing, Schedule
@@ -43,6 +45,16 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         scheduled = filter(lambda v: v.scheduled_for, filtered)
         unscheduled = sorted(filter(lambda v: not v.scheduled_for, filtered), lambda x,y: cmp(x.movie.title,y.movie.title))
         return scheduled + unscheduled
+
+    def social_account(self, provider_id):
+        return self.socialaccount_set.filter(provider=provider_id).first()
+
+    @property
+    def avatar_url(self):
+        account = self.social_account('twitter')
+        if account and 'profile_image_url' in account.extra_data:
+            return account.extra_data.get('profile_image_url')
+        return staticfiles_storage.url("images/avatar-placeholder.png")
 
 
     @property

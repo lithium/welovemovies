@@ -2,10 +2,53 @@
 
 {% block content %}
 
-    {{ request.user }}
+<div class="container">
+    <form method="POST" action="">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+        <fieldset class="form-group row {%if form.username.errors%}has-danger{%endif%}">
+            <label for="id_username" class="col-sm-2 form-control-label {%if form.username.errors%}has-danger{%endif%}">Username </label>
+            <div class="col-xs-4">
+                {%if form.username.errors%}
+                <small class="has-danger">
+                    {{form.username.errors[0]}}
+                </small>
+                {%endif%}
+                <input type="text" class="form-control" id="id_username" name="username" value="{{form.username.value()}}">
+            </div>
+        </fieldset>
+        <fieldset class="form-group row">
+            <label for="id_email" class="col-sm-2 form-control-label">E-mail</label>
+            <div class="col-xs-4">
+                <input type="text" class="form-control" id="id_email" name="email" value="{{form.email.value()}}" placeholder="E-mail address">
+            </div>
+        </fieldset>
+        <div class="row">
+            <div class="col-xs-6">
+                <hr>
+            </div>
+        </div>
+        <fieldset class="form-group row">
+            <label for="" class="col-sm-2 form-control-label">Twitter</label>
+            <div class="col-xs-4">
+                {%if request.user.social_account('twitter')%}
+                    <code>
+                        {{ request.user.social_account('twitter').extra_data.screen_name}}
+                    </code>
+                {%else %}
+                <a href="{{ social_provider('twitter').get_login_url(request, process='connect') }}">
+                    <img src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"/>
+                </a>
+                {%endif%}
+            </div>
+        </fieldset>
+        <fieldset class="form-group row">
+            <label for="" class="col-sm-2 form-control-label">Avatar</label>
+            <div class="col-xs-4">
+                <img class="img-circle" src="{{ request.user.avatar_url }}" width="48">
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
 
-    twitter:
-    <code>
-    {{ request.user.socialaccount_set.filter(provider='twitter').first().extra_data }}
-    </code>
 {% endblock %}

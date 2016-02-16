@@ -15,6 +15,7 @@ def jinja2_environment(**options):
         'static': staticfiles_storage.url,
         'reverse': reverse,
         'get_social_providers': providers.registry.get_list,
+        'social_provider': providers.registry.by_id,
         'get_messages': get_messages,
         'now': timezone.now(),
     })

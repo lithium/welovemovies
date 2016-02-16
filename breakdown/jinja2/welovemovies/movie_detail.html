@@ -39,6 +39,8 @@
                 <a class="btn btn-secondary" data-parent="#accordion" data-toggle="collapse" href="#schedule-viewing-form" aria-expanded="false" aria-controls="schedule-viewing-form">
                     {%if viewing and viewing.scheduled_for%}
                     Scheduled for {{viewing.scheduled_for.strftime("%b %d")}}
+                    {%elif viewing%}
+                    Un-watched
                     {%else%}
                     Add to Schedule
                     {%endif%}
