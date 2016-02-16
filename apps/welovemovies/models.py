@@ -165,6 +165,7 @@ class Viewing(DefaultModel):
 
     def publish(self):
         super(Viewing, self).publish()
+        self.publish_by('movie','viewer')
         self.movie.publish()
         self.viewer.publish()
         self.viewer.publish_method('favorite_directors')

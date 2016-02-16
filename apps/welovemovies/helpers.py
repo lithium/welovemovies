@@ -1,4 +1,3 @@
-import shutil
 from hashlib import md5
 
 import imdb
@@ -6,8 +5,8 @@ import requests
 from django.core.cache import cache
 from django.core.files.storage import DefaultStorage
 
-class ImdbHelper(object):
 
+class ImdbHelper(object):
     def __init__(self, **kwargs):
         self.imdb = imdb.IMDb(**kwargs)
 
