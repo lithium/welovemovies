@@ -5,42 +5,42 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container hidden-sm-down">
     <div class="row card-stats">
-        <div class="col-sm-2">
+        <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{request.user.watched_count}}</h1>
                 <h6 class="text-muted">Watched</h6>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
-                <h6 class="text-muted">Movies left</h6>
+                <h6 class="text-muted">Left</h6>
             </div>
         </div>
-        <div class="col-sm-2">
-            <div class="card card-block">
-                <h1>{{challenge.days_left}}</h1>
-                <h6 class="text-muted">Days left</h6>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-block">
-                <h1>~{{"{:0.0f}".format(((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)*7)}}</h1>
-                <h6 class="text-muted">Per week</h6>
-            </div>
-        </div>
-        <div class="col-sm-2">
+        <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{request.user.unwatched_count}}</h1>
-                <h6 class="text-muted">Unwatched</h6>
+                <h6 class="text-muted">Saved</h6>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{(challenge.how_many_movies - request.user.watched_count) - request.user.unwatched_count}}</h1>
                 <h6 class="text-muted">Needed</h6>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card card-block">
+                <h1>{{challenge.days_left}}</h1>
+                <h6 class="text-muted">Days</h6>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card card-block">
+                <h1>~{{"{:0.0f}".format(((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)*7)}}</h1>
+                <h6 class="text-muted">Weekly</h6>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
 
 
 <div class="container">
-    <h2>Un-watched</h2>
+    <h2>Saved</h2>
     {% for viewing in unwatched %}
         {{ viewing_row(viewing) }}
     {% endfor %}
@@ -67,12 +67,12 @@
 {% macro viewing_row(viewing) %}
 
 <div class="row viewing">
-    <div class="col-sm-2 cover">
+    <div class="col-xs-2 cover">
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">
             <img class="img-rounded" src="{{reverse('movie_cover', kwargs={'movieID': viewing.movie.imdb_id})}}" >
             </a>
     </div>
-    <div class="col-sm-10">
+    <div class="col-xs-10 description">
         <h4>
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">{{viewing.movie}}{%if viewing.year%} ({{viewing.year}}){%endif%}</a>
             <span class="imdb-link">

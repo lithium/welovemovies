@@ -16,6 +16,19 @@
     margin-bottom: 2em;
 
 
+    .description {
+        padding-left: 4rem;
+    }
+    @media(min-width: 34em) {
+        .description {
+            padding-left: 2rem;
+        }
+    }
+    @media(min-width: 48em) {
+        .description {
+            padding-left: 0rem;
+        }
+    }
 
 }
 
@@ -45,3 +58,5 @@
 .scheduling.container {
     margin-top: 1rem;
 }
+
+
