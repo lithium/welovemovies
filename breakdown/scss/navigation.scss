@@ -7,8 +7,27 @@
 }
 
 
-#navbar-search span.input-group-addon button {
+#navbar-search {
+    margin-right: 1rem;
+    .input-group-addon {
+        padding: 0.375rem 0.375rem;
+        button {
+            border: none;
+            padding: 0 0 0 0;
+            background-color: rgba(0,0,0,0);
+        }
+    }
+}
+
+@media(max-width: 35em) {
+    .navbar-brand {
+        float: none;
+    }
+
+}
+
+
+button.avatar-dropdown {
+    background: none;
     border: none;
-    padding: 0 0 0 0;
-    background-color: rgba(0,0,0,0);
 }
