@@ -1,4 +1,3 @@
-var browserSync = require("browser-sync");
 
 module.exports = function(grunt) {
     grunt.initConfig({
@@ -20,12 +19,8 @@ module.exports = function(grunt) {
             },
             scss: {
                 files: ['<%= srcPath %>**/*.scss'],
-                tasks: ['sass', 'autoprefixer', 'bs-inject']
+                tasks: ['sass', 'autoprefixer']
             },
-            staticFiles: {
-                files: ['**/*.html'],
-                tasks: ['bs-inject']
-            }
         },
 
         sass: {
@@ -49,19 +44,6 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask("bs-init", function () {
-        var done = this.async();
-        browserSync({
-            proxy: 'localhost:8000' // This needs to match your current server eg. localhost:5000
-        }, function (err, bs) {
-            done();
-        });
-    });
-
-    grunt.registerTask("bs-inject", function () {
-        browserSync.reload(['**/*.html','**/*.css']);
-    });
-
     grunt.loadNpmTasks('grunt-autoprefixer');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -70,6 +52,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-shell-spawn');
     grunt.loadNpmTasks('grunt-inline');
 
-    grunt.registerTask('default', ['bs-init', 'sass', 'autoprefixer', 'watch']);
+    grunt.registerTask('default', ['sass', 'autoprefixer', 'watch']);
     grunt.registerTask('dist', ['env:dist', 'sass', 'autoprefixer']);
 };

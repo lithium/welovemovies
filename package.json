@@ -8,7 +8,6 @@
     "lodash": "~3.10.0"
   },
   "devDependencies": {
-    "browser-sync": "latest",
     "browserify": "~7.0.2",
     "grunt-autoprefixer": "latest",
     "grunt-contrib-requirejs": "latest",
