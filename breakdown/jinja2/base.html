@@ -25,10 +25,10 @@
                 <div class="collapse navbar-toggleable-xs" id="navbar-header">
                     <a class="navbar-brand" href="{{ reverse('home') }}">We Love Movies</a>
                     <ul class="nav navbar-nav">
-                        <li class="nav-item active">
+                        <li class="nav-item {%if active_tab == 'movies'%}active{%endif%}">
                             <a class="nav-link" href="{{ reverse('my_movies') }}">Movies</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {%if active_tab == 'schedule'%}active{%endif%}">
                             <a class="nav-link" href="{{ reverse('my_schedule') }}">Schedule</a>
                         </li>
                     </ul>
