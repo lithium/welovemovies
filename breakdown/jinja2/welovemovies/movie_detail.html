@@ -16,9 +16,22 @@
                 <a href="http://imdb.com/title/tt{{movie.imdb_id}}" target="_blank">IMDb</a>
                 </span>
             </h2>
-            {%if movie.genres%}
-            <h6 class="text-muted">{{", ".join(movie.genres)}}</h6>
-            {%endif%}
+            
+            <h6 class="text-muted">
+                {%if movie.runtime %}
+                <span>
+                {{ movie.get_runtime_display() }}
+                </span>
+                {%endif%}
+
+                {%if movie.genres%}
+                {%if movie.runtime%}<strong>&nbsp;|&nbsp;</strong>{%endif%}
+                <span>
+                {{", ".join(movie.genres)}}
+                </span>
+                {%endif%}
+            </h6>
+
 
             {%if movie.directors%}
             <h6 class="text-muted"><strong>Directed by:</strong> {{", ".join(movie.directors)}}</h6>

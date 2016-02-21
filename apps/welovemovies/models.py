@@ -118,6 +118,14 @@ class Movie(DefaultModel):
         if self.year:
             return self.year - (self.year % 10)
 
+    def get_runtime_display(self):
+        if self.runtime:
+            hours = self.runtime / 60
+            minutes = self.runtime % 60
+            if hours > 0:
+                return u"{hours}h {minutes}min".format(hours=hours, minutes=minutes)
+            return u"{minutes}min".format(minutes=minutes)
+
 class MovieDescription(DefaultModel):
     movie = models.ForeignKey('welovemovies.Movie')
     description = models.TextField()

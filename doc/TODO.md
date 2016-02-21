@@ -7,7 +7,7 @@ Bug Fixes
   - record viewing should be its own page
   - movie list needs filtering
   - movie list design needs to afford for hundreds of items better
-  - visible runtimes
+  x visible runtimes
 
 
 

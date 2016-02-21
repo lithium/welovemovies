@@ -88,9 +88,21 @@
         </h5>
         {%endif%}
 
-        {%if viewing.movie.genres%}
-        <h6 class="text-muted">{{", ".join(viewing.movie.genres)}}</h6>
-        {%endif%}
+        <h6 class="text-muted">
+
+            {%if viewing.movie.runtime %}
+            <span>
+            {{ viewing.movie.get_runtime_display() }}
+            </span>
+            {%endif%}
+
+            {%if viewing.movie.genres%}
+            {%if viewing.movie.runtime%}<strong>&nbsp;|&nbsp;</strong>{%endif%}
+            <span>
+            {{", ".join(viewing.movie.genres)}}
+            </span>
+            {%endif%}
+        </h6>
 
         {%if viewing.movie.imdb_plot_outline%}<p>{{viewing.movie.imdb_plot_outline}}</p>{%endif%}
     </div>
