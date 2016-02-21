@@ -53,7 +53,14 @@
             <div class="form-group">
                 <input type="text" class="search form-control" placeholder="Search movies"/>
             </div>
+            <div class="btn-group sort">
+                <button type="button" data-sort="movie-title" class="btn btn-secondary">Title</button>
+                <button type="button" data-sort="movie-year" class="btn btn-secondary">Year</button>
+                <button type="button" data-sort="movie-date" class="btn btn-primary">Date</button>
+                <button type="button" data-sort="movie-runtime" class="btn btn-secondary">Runtime</button>
+            </div>
         </form>
+
     </div>
     <div class="row">
         <div class="col-sm-6" id="unwatched-list">
@@ -91,13 +98,14 @@
     </div>
     <div class="col-xs-10 description">
         <h4>
-            <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}"><span class="movie-title">{{viewing.movie}}</span>{%if viewing.year%} (<span class="movie-year">{{viewing.year}}</span>){%endif%}</a>
+            <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}"><span class="movie-title">{{viewing.movie.title}}</span>{%if viewing.movie.year%} (<span class="movie-year">{{viewing.movie.year}}</span>){%endif%}</a>
+
         </h4>
         {%if viewing.status == 'unwatched' and viewing.scheduled_for %}
-        <h5 class="movie-scheduled">Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}</h5>
+        <h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}} <span class="movie-date display-none">{{viewing.scheduled_for}}</span></h5>
         {%endif%}
         {%if (viewing.status == 'watched' or viewing.status == 'rewatched') %}
-        <h5 class="movie-watched">{{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}
+        <h5>{{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
             {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
         </h5>
         {%endif%}
@@ -126,21 +134,46 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     var listOptions = {
-        valueNames: ['movie-title', 'movie-year', 'movie-scheduled'],
+        valueNames: ['movie-title', 'movie-year', 'movie-date', 'movie-genres', 'movie-runtime'],
     };
-
     var watchedList = new List('watched-list', listOptions);
     var unwatchedList = new List('unwatched-list', listOptions);
 
-    var searchInput = $('#viewing-list input.search');
 
+    var searchInput = $('#viewing-list input.search');
     var updateSearch = function(e) {
         var val = searchInput.val();
-        watchedList.search(val, ['movie-title']);
-        unwatchedList.search(val, ['movie-title']);
+        watchedList.search(val);
+        unwatchedList.search(val);
     }
     searchInput.on('change', updateSearch);
     searchInput.on('keyup', updateSearch);
+
+    var curSort = {current:'movie-date', order: 'desc'};
+    watchedList.sort(curSort.current, {'order': curSort.order});
+    unwatchedList.sort(curSort.current, {'order': curSort.order});
+
+    var sortGroup = $('#viewing-list .sort');
+    sortGroup.find('button').on('click', function(e) {
+        var old = sortGroup.find('button.btn-primary');
+        old.removeClass('btn-primary').addClass('btn-secondary');
+
+        var self = $(e.target);
+        var sort = self.data('sort');
+        var order = 'asc';
+
+        if (curSort.current == sort) {
+            curSort.order = curSort.order == 'asc' ? 'desc' : 'asc';
+        } else {
+            curSort = {current: sort, order: 'asc'};
+        }
+
+        watchedList.sort(curSort.current, {'order': curSort.order});
+        unwatchedList.sort(curSort.current, {'order': curSort.order});
+
+        self.addClass('btn-primary').removeClass('btn-secondary');
+    });
+
 
 
 });
