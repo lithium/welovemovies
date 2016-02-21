@@ -49,18 +49,20 @@
 
 
 <div class="container">
-    <h2>Saved</h2>
-    {% for viewing in unwatched %}
+    <div class="col-sm-6">
+        <h2>Saved</h2>
+        {% for viewing in unwatched %}
+            {{ viewing_row(viewing) }}
+        {% endfor %}
+        </div>
+    <div class="col-sm-6">
+        <h2>Watched</h2>
+        {% for viewing in watched %}
         {{ viewing_row(viewing) }}
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
-<div class="container">
-    <h2>Watched</h2>
-    {% for viewing in watched %}
-    {{ viewing_row(viewing) }}
-    {% endfor %}
-</div>
 {% endblock %}
 
 
@@ -71,13 +73,13 @@
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">
                 <img class="img-rounded" src="{{ viewing.movie.cached_cover_url }}" >
             </a>
+            <div class="imdb-link">
+            <a href="http://imdb.com/title/tt{{viewing.movie.imdb_id}}" target="_blank" class="card-link">IMDb</a>
+            </div>
     </div>
     <div class="col-xs-10 description">
         <h4>
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">{{viewing.movie}}{%if viewing.year%} ({{viewing.year}}){%endif%}</a>
-            <span class="imdb-link">
-            <a href="http://imdb.com/title/tt{{viewing.movie.imdb_id}}" target="_blank" class="card-link">IMDb</a>
-            </span>
         </h4>
         {%if viewing.status == 'unwatched' and viewing.scheduled_for %}
         <h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}</h5>
@@ -103,8 +105,6 @@
             </span>
             {%endif%}
         </h6>
-
-        {%if viewing.movie.imdb_plot_outline%}<p>{{viewing.movie.imdb_plot_outline}}</p>{%endif%}
     </div>
 </div>
 {% endmacro %}

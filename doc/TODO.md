@@ -6,7 +6,7 @@ Bug Fixes
   x review should be unilmited length text field
   - record viewing should be its own page
   - movie list needs filtering
-  - movie list design needs to afford for hundreds of items better
+  x movie list design needs to afford for hundreds of items better
   x visible runtimes
 
 

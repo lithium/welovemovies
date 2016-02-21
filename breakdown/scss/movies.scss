@@ -13,7 +13,20 @@
 
 
 .row.viewing {
-    margin-bottom: 2em;
+    margin-bottom: 1rem;
+
+    .cover img {
+        height: 5rem;
+    }
+
+    h4 {
+        font-size: 1.25rem;
+    }
+
+    h5 {
+        font-size: 1rem;
+
+    }
 
 
     .description {
