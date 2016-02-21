@@ -45,6 +45,10 @@ module.exports = function(grunt) {
 
         curl: {
             '<%= destPath %>css/font-awesome.min.css': "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css",
+            '<%= destPath %>fonts/fontawesome-webfont.tff': "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/fonts/fontawesome-webfont.ttf",
+            '<%= destPath %>fonts/fontawesome-webfont.woff': "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/fonts/fontawesome-webfont.woff",
+            '<%= destPath %>fonts/fontawesome-webfont.woff2': "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/fonts/fontawesome-webfont.woff2",
+
             '<%= destPath %>css/tether.min.css': "https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/css/tether.min.css",
             '<%= destPath %>css/bootstrap.min.css': "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css",
             '<%= destPath %>css/pikaday.min.css': "https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/css/pikaday.min.css",
@@ -66,6 +70,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-inline');
     grunt.loadNpmTasks('grunt-curl');
 
-    grunt.registerTask('default', ['sass', 'curl', 'autoprefixer', 'watch']);
+    grunt.registerTask('default', ['sass', 'autoprefixer', 'watch']);
     grunt.registerTask('dist', ['env:dist', 'sass', 'curl', 'autoprefixer']);
 };
