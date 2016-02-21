@@ -69,7 +69,7 @@
 <div class="row viewing">
     <div class="col-xs-2 cover">
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">
-            <img class="img-rounded" src="{{reverse('movie_cover', kwargs={'movieID': viewing.movie.imdb_id})}}" >
+                <img class="img-rounded" src="{{ viewing.movie.cached_cover_url }}" >
             </a>
     </div>
     <div class="col-xs-10 description">

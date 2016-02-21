@@ -7,14 +7,13 @@ Movie Detail Page:
   x i can see cover and plot summary of the movie
   x I can schedule a Viewing for this movie (in the future)
   x i can see a list of my Viewings for this movie
-
-
+  - i can see top 5 billed actors for the movie
 
 My Movies Page:
   x i can see a list of all my viewings 
   - i can filter the list by watched/unwatched, future/past
-  - i can cancel a unwatched viewing
   - i can search my unwatched list
+  - i can cancel a unwatched viewing
 
 
 Record viewing:
@@ -23,6 +22,7 @@ Record viewing:
   x i can leave a love/like/hate/hatelike rating
   x i can provide how i watched it (theatre,netflix,etc)
   - i can tweet out my brief review including my default prefix and hashtags 
+  - i can pick actors i liked
 
 
 My Schedule Page:
@@ -40,12 +40,11 @@ Homepage / leaderboard:
   - i can see a leaderboard of the top 5 people by movie count
   - i can see overall stats of all users
 
+Public Profile Page
+
 
 Backlog
-  - i can make a list of movies to share with other people
-  - i can optionally leave a full length review
-  - public profile page
   - i can upload an avatar
   - i can choose which is my default avatar: placeholder, uploaded or from a social account
   - i can see a calendar of scheduled viewings
-
+  - i can make a list of movies to share with other people
