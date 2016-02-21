@@ -41,6 +41,19 @@ module.exports = function(grunt) {
             options: {
                 map: true
             }
+        },
+
+        curl: {
+            '<%= destPath %>css/font-awesome.min.css': "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css",
+            '<%= destPath %>css/tether.min.css': "https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/css/tether.min.css",
+            '<%= destPath %>css/bootstrap.min.css': "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css",
+            '<%= destPath %>css/pikaday.min.css': "https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/css/pikaday.min.css",
+
+            '<%= destPath %>js/jquery.min.js': "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
+            '<%= destPath %>js/tether.min.js': "https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/js/tether.min.js",
+            '<%= destPath %>js/bootstrap.min.js': "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js",
+            '<%= destPath %>js/moment.min.js': "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js",
+            '<%= destPath %>js/pikaday.min.js': "https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/pikaday.min.js",
         }
     });
 
@@ -51,7 +64,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-shell-spawn');
     grunt.loadNpmTasks('grunt-inline');
+    grunt.loadNpmTasks('grunt-curl');
 
-    grunt.registerTask('default', ['sass', 'autoprefixer', 'watch']);
-    grunt.registerTask('dist', ['env:dist', 'sass', 'autoprefixer']);
+    grunt.registerTask('default', ['sass', 'curl', 'autoprefixer', 'watch']);
+    grunt.registerTask('dist', ['env:dist', 'sass', 'curl', 'autoprefixer']);
 };
