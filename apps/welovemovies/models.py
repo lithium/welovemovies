@@ -67,13 +67,13 @@ class Movie(DefaultModel):
             #     imdb.download_image(self.large_cover_url)
             self.save()
 
-            for director in imdb_movie.get('director'):
+            for director in imdb_movie.get('director', []):
                 meta, created = MovieMetadata.cached.get_or_create(movie=self, key='director', source='imdb', source_id=director.getID())
                 if created:
                     meta.value = director.get('name')
                     meta.save()
 
-            for genre in imdb_movie.get('genres'):
+            for genre in imdb_movie.get('genres', []):
                 meta, created = MovieMetadata.cached.get_or_create(movie=self, key='genre', source='imdb', value=genre)
             return True
 
