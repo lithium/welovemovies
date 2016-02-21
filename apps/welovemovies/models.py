@@ -157,7 +157,7 @@ class Viewing(DefaultModel):
     viewed_on = models.DateField(blank=True, null=True)
     scheduled_for = models.DateField(blank=True, null=True)
     rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
-    summary = models.CharField(max_length=254, blank=True, null=True)
+    summary = models.TextField(blank=True, null=True)
     how_watched = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
