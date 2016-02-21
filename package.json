@@ -17,7 +17,8 @@
     "grunt-env": "~0.4.4",
     "grunt-inline": "^0.3.6",
     "grunt-shell-spawn": "latest",
-    "grunt-cli": "latest"
+    "grunt-cli": "latest",
+    "grunt-curl": "latest"
   },
   "readmeFilename": "README",
   "scripts": {

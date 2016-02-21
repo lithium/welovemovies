@@ -57,7 +57,7 @@ module.exports = function(grunt) {
             '<%= destPath %>js/tether.min.js': "https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/js/tether.min.js",
             '<%= destPath %>js/bootstrap.min.js': "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js",
             '<%= destPath %>js/moment.min.js': "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js",
-            '<%= destPath %>js/pikaday.min.js': "https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/pikaday.min.js",
+            '<%= destPath %>js/list.min.js': "https://raw.githubusercontent.com/javve/list.js/v1.1.1/dist/list.js",
         }
     });
 
