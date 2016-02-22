@@ -11,8 +11,8 @@ Movie Detail Page:
 
 My Movies Page:
   x i can see a list of all my viewings 
-  - i can filter the list by watched/unwatched, future/past
-  - i can search my unwatched list
+  x i can filter the list by watched/unwatched
+  x i can search my unwatched list
   - i can cancel a unwatched viewing
 
 
