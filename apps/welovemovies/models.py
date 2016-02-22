@@ -181,6 +181,8 @@ class MovieCast(DefaultModel):
     def publish(self):
         super(MovieCast, self).publish()
         self.publish_by('movie', 'person')
+        self.person.publish()
+        self.movie.publish()
 
 
 class MovieMetadata(DefaultModel):
