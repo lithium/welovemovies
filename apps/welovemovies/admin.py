@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django_object_actions import DjangoObjectActions
 
-from welovemovies.models import Movie, MovieMetadata
+from welovemovies.models import Movie, MovieMetadata, MovieCast, Person
 
 
 class MovieAdminForm(forms.ModelForm):
@@ -20,6 +20,13 @@ class MovieMetadataInline(admin.TabularInline):
     extra = 0
     fields = ('key', 'value', 'source', 'source_id')
     readonly_fields = ('key', 'value', 'source', 'source_id')
+
+
+class MovieCastInline(admin.TabularInline):
+    model = MovieCast
+    extra = 0
+    fields = ('person', 'role')
+    readonly_fields = ('person',)
 
 
 class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
@@ -43,7 +50,8 @@ class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
         }),
     )
     inlines = [
-        MovieMetadataInline
+        MovieMetadataInline,
+        MovieCastInline
     ]
 
     def fetch_imdb_bulk(self, request, qs):
@@ -58,3 +66,18 @@ class MovieAdmin(DjangoObjectActions, admin.ModelAdmin):
 admin.site.register(Movie, MovieAdmin)
 
 
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('name', 'imdb_id')
+    search_fields = ('name', 'imdb_id')
+    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
+    fieldsets = (
+        ("Metadata", {
+            'fields': ('is_active', 'created_at', 'created_by', 'updated_at', 'updated_by'),
+            'classes': ('collapse',)
+        }),
+        (None, {
+            'fields': ('imdb_id', 'name'),
+        }),
+    )
+
+admin.site.register(Person, PersonAdmin)

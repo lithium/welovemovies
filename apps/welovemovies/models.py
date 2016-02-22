@@ -3,6 +3,7 @@ from hashlib import md5
 import cachemodel
 from django.conf import settings
 from django.db import models
+from imdb.utils import RolesList
 
 from mainsite.models import DefaultModel
 from welovemovies.helpers import ImdbHelper
@@ -75,6 +76,24 @@ class Movie(DefaultModel):
 
             for genre in imdb_movie.get('genres', []):
                 meta, created = MovieMetadata.cached.get_or_create(movie=self, key='genre', source='imdb', value=genre)
+
+            i = 1
+            for cast in imdb_movie.get('cast', []):
+                person, created = Person.cached.get_or_create(imdb_id=cast.getID())
+                person.name = cast.get('name')
+                person.save()
+
+                movie_cast, created = MovieCast.cached.get_or_create(movie=self, person=person)
+                role = getattr(cast, 'currentRole')
+                if isinstance(role, RolesList):
+                    movie_cast.role = u' / '.join(r.get('name') for r in role)
+                elif role:
+                    movie_cast.role = role.get('name')
+                movie_cast.ordering = i
+                movie_cast.save()
+                i += 1
+
+
             return True
 
     @cachemodel.cached_method(auto_publish=True)
@@ -96,6 +115,10 @@ class Movie(DefaultModel):
     @property
     def genres(self):
         return map(lambda m: m.value, self.cached_genres())
+
+    @cachemodel.cached_method(auto_publish=True)
+    def cached_cast(self):
+        return self.moviecast_set.all()
 
     @property
     def cached_cover_url(self):
@@ -126,9 +149,38 @@ class Movie(DefaultModel):
                 return u"{hours}h {minutes}min".format(hours=hours, minutes=minutes)
             return u"{minutes}min".format(minutes=minutes)
 
-class MovieDescription(DefaultModel):
+
+class Person(DefaultModel):
+    imdb_id = models.CharField(max_length=254, unique=True)
+    name = models.CharField(max_length=254)
+
+    def __unicode__(self):
+        if self.name:
+            return self.name
+        return self.imdb_id
+
+    def publish(self):
+        super(Person, self).publish()
+        self.publish_by('imdb_id')
+
+
+class MovieCast(DefaultModel):
     movie = models.ForeignKey('welovemovies.Movie')
-    description = models.TextField()
+    person = models.ForeignKey('welovemovies.Person')
+    role = models.CharField(max_length=254, blank=True, null=True)
+    ordering = models.IntegerField(default=99)
+
+    class Meta:
+        ordering = ('ordering',)
+
+    def __unicode__(self):
+        if self.role:
+            return u"{} as {}".format(self.person.name, self.role)
+        return unicode(self.person)
+
+    def publish(self):
+        super(MovieCast, self).publish()
+        self.publish_by('movie', 'person')
 
 
 class MovieMetadata(DefaultModel):
@@ -137,6 +189,11 @@ class MovieMetadata(DefaultModel):
     source_id = models.CharField(max_length=254, blank=True, null=True)
     key = models.CharField(max_length=254, db_index=True)
     value = models.TextField()
+
+    def publish(self):
+        super(MovieMetadata, self).publish()
+        self.publish_by('movie', 'key', 'source', 'source_id')
+        self.publish_by('movie', 'key', 'source', 'value')
 
 
 class Viewing(DefaultModel):
@@ -180,6 +237,11 @@ class Viewing(DefaultModel):
         self.viewer.publish_method('favorite_genres')
 
 
+class ViewingCast(DefaultModel):
+    viewing = models.ForeignKey('welovemovies.Viewing')
+    actor = models.ForeignKey('welovemovies.MovieCast')
+
+
 class Schedule(cachemodel.CacheModel):
     FIELD_NAMES = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -218,3 +280,4 @@ class Schedule(cachemodel.CacheModel):
     @property
     def avg_per_day(self):
         return self.total_per_week/7.0
+
