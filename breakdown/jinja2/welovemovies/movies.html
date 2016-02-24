@@ -39,8 +39,8 @@
         </div>
         <div class="col-md-2">
             <div class="card card-block">
-                <h1>~{{"{:0.0f}".format(((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)*7)}}</h1>
-                <h6 class="text-muted">Weekly</h6>
+                <h1>{{"{:0.1f}".format(request.user.velocity)}}</h1>
+                <h6 class="text-muted">Velocity</h6>
             </div>
         </div>
     </div>

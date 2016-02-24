@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.utils import timezone
 
 from challenge.models import ActiveChallenge
 from welovemovies.models import Viewing, Schedule
@@ -56,7 +57,6 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
             return account.extra_data.get('profile_image_url')
         return staticfiles_storage.url("images/avatar-placeholder.png")
 
-
     @property
     def unwatched_count(self):
         return len(self.unwatched_movies())
@@ -108,7 +108,7 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
 
     def _favorite_movie_property(self, prop_name):
         index = {}
-        for v in self.cached_viewings():
+        for v in self.watched_movies():
             val = getattr(v.movie, prop_name)
             try:
                 val_iter = iter(val)
@@ -120,6 +120,17 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         sorted_items = sorted(index.items(), lambda x,y: cmp(y[1], x[1]))
         # ret = map(lambda l: {prop_name: l[0], 'count': l[1]}, sorted_genres)
         return sorted_items
+
+    @property
+    def velocity(self):
+        watched_count = len(self.watched_movies())
+        if watched_count < 1:
+            return 0
+        sort = sorted(self.watched_movies(), lambda a,b: cmp(a.viewed_on, b.viewed_on))
+        first_movie = sort[0]
+        timedelta = timezone.now().date() - first_movie.viewed_on
+        velocity = float(watched_count) / float(timedelta.days)
+        return velocity
 
 
 

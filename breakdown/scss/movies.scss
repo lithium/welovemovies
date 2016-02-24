@@ -2,6 +2,9 @@
 .card-stats {
     .card {
         text-align: center;
+        h1 {
+            font-size: 2rem;
+        }
         h6 {
             text-transform: uppercase;
             font-size: 0.75rem;
@@ -39,7 +42,7 @@
     }
     @media(min-width: 48em) {
         .description {
-            padding-left: 0rem;
+            padding-left: 1rem;
         }
     }
 
