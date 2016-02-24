@@ -13,8 +13,8 @@ Bug Fixes
 
 Performance Improvements
 ------------------------
-  - local thumbnails of full-size cover images
   x dont redirect for images that have been cached
+  - local thumbnails of full-size cover images
   - ajax search results
 
 

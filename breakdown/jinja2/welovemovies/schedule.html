@@ -8,9 +8,9 @@
 
 <div class="container">
 
-    <div class="row">
-        <form method="POST">
-            <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+    <form method="POST">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
+        <div class="row hidden-md-down">
             <div class="col-xs-4">
                 <label class="form-control-label">&nbsp;</label>
                     <h2>Weekly Schedule</h2>
@@ -47,8 +47,44 @@
                 <label class="form-control-label">&nbsp;</label>
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
-        </form>
-    </div>
+        </div>
+        <div class="row hidden-lg-up">
+            <div class="col-xs-3">
+                <label class="form-control-label">Mon</label>
+                <input type="number" class="form-control" value="{{form.monday.value()}}" name="monday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Tue</label>
+                <input type="number" class="form-control" value="{{form.tuesday.value()}}" name="tuesday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Wed</label>
+                <input type="number" class="form-control" value="{{form.wednesday.value()}}" name="wednesday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Thu</label>
+                <input type="number" class="form-control" value="{{form.thursday.value()}}" name="thursday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Fri</label>
+                <input type="number" class="form-control" value="{{form.friday.value()}}" name="friday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Sat</label>
+                <input type="number" class="form-control" value="{{form.saturday.value()}}" name="saturday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">Sun</label>
+                <input type="number" class="form-control" value="{{form.sunday.value()}}" name="sunday" required>
+            </div>
+            <div class="col-xs-3">
+                <label class="form-control-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+
+    <hr>
 
     <div class="row card-stats">
         <div class="col-sm-3">
@@ -83,23 +119,44 @@
     <div class="row card-stats">
 
         <div class="col-sm-4">
-            <div class="card card-block">
-                <h1>{{request.user.favorite_director[0]}}</h1>
-                <h6 class="text-muted">Favorite Director ({{request.user.favorite_director[1]}})</h6>
+            <div class="card">
+                <div class="card-block">
+                    <h1>{{request.user.favorite_director[0]}}</h1>
+                    <h6 class="text-muted">Favorite Director</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for dir in request.user.favorite_directors()[:3] %}
+                    <li class="list-group-item">{{dir[0]}} <span class="pull-xs-right">{{dir[1]}}</span></li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 
         <div class="col-sm-4">
-            <div class="card card-block">
-                <h1>{{request.user.favorite_genre[0]}}</h1>
-                <h6 class="text-muted">Favorite Genre ({{request.user.favorite_genre[1]}})</h6>
+            <div class="card">
+                <div class="card-block">
+                    <h1>{{request.user.favorite_genre[0]}}</h1>
+                    <h6 class="text-muted">Favorite Genre</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for g in request.user.favorite_genres()[:3] %}
+                    <li class="list-group-item">{{g[0]}} <span class="pull-xs-right">{{g[1]}}</span></li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 
         <div class="col-sm-4">
-            <div class="card card-block">
-                <h1>{{request.user.favorite_year[0]}}</h1>
-                <h6 class="text-muted">Favorite Year ({{request.user.favorite_year[1]}})</h6>
+            <div class="card">
+                <div class="card-block">
+                    <h1>{{request.user.favorite_decade[0]}}s</h1>
+                    <h6 class="text-muted">Favorite Decade</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for d in request.user.favorite_decades()[:3] %}
+                    <li class="list-group-item">{{d[0]}}s <span class="pull-xs-right">{{d[1]}}</span></li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 

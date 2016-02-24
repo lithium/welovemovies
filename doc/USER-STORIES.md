@@ -7,7 +7,7 @@ Movie Detail Page:
   x i can see cover and plot summary of the movie
   x I can schedule a Viewing for this movie (in the future)
   x i can see a list of my Viewings for this movie
-  - i can see top 5 billed actors for the movie
+  x i can see top 5 billed actors for the movie
 
 My Movies Page:
   x i can see a list of all my viewings 

@@ -66,8 +66,6 @@ class Movie(DefaultModel):
             self.imdb_votes = imdb_movie.get('votes')
             self.cover_url = imdb_movie.get('cover url')
             self.large_cover_url = imdb_movie.get('full-size cover url')
-            # if self.large_cover_url:
-            #     imdb.download_image(self.large_cover_url)
             self.save()
 
             for director in imdb_movie.get('director', []):

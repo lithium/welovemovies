@@ -100,6 +100,12 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
     def favorite_decades(self):
         return self._favorite_movie_property('decade')
 
+    @property
+    def favorite_decade(self):
+        g = self.favorite_decades()
+        if len(g) > 0:
+            return g[0]
+
     def _favorite_movie_property(self, prop_name):
         index = {}
         for v in self.cached_viewings():
