@@ -2,6 +2,8 @@ from hashlib import md5
 
 import cachemodel
 from django.conf import settings
+from django.core.files.storage import DefaultStorage
+from django.core.urlresolvers import reverse
 from django.db import models
 from imdb.utils import RolesList
 
@@ -124,17 +126,21 @@ class Movie(DefaultModel):
     def cached_cover_url(self):
         if self.cover_url:
             digest = md5(self.cover_url).hexdigest()
-            return "{}imdb/image/{}".format(settings.MEDIA_URL, digest)
-        else:
-            return "{}images/cover-placeholder.png".format(settings.STATIC_URL)
+            store = DefaultStorage()
+            storage_name = "imdb/image/{}".format(digest)
+            if store.exists(storage_name):
+                return "{}{}".format(settings.MEDIA_URL, storage_name)
+        return reverse('movie_cover', kwargs={'movieID': self.imdb_id})
 
     @property
     def cached_large_cover_url(self):
         if self.large_cover_url:
             digest = md5(self.large_cover_url).hexdigest()
-            return "{}imdb/image/{}".format(settings.MEDIA_URL, digest)
-        else:
-            return "{}images/cover-placeholder.png".format(settings.STATIC_URL)
+            store = DefaultStorage()
+            storage_name = "imdb/image/{}".format(digest)
+            if store.exists(storage_name):
+                return "{}{}".format(settings.MEDIA_URL, storage_name)
+        return "{}?size=full".format(reverse('movie_cover', kwargs={'movieID': self.imdb_id}))
 
     @property
     def decade(self):
