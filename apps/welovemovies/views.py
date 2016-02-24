@@ -43,7 +43,7 @@ class MovieDetail(DetailView):
         movieID = self.kwargs.get('movieID')
         movie, created = Movie.cached.get_or_create(imdb_id=movieID)
         if created:
-            movie.fetch_imdb()
+            movie.fetch_imdb(max_cast=5)
         return movie
 
     def get_context_data(self, **kwargs):

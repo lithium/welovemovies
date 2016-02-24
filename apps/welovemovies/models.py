@@ -43,7 +43,7 @@ class Movie(DefaultModel):
         self.publish_delete('imdb_id')
         return super(Movie, self).delete(*args, **kwargs)
 
-    def fetch_imdb(self):
+    def fetch_imdb(self, max_cast=None):
         if not self.imdb_id:
             return False
         imdb = ImdbHelper()
@@ -93,8 +93,9 @@ class Movie(DefaultModel):
                     movie_cast.role = role.get('name')
                 movie_cast.ordering = i
                 movie_cast.save()
+                if max_cast and i >= max_cast:
+                    break
                 i += 1
-
 
             return True
 

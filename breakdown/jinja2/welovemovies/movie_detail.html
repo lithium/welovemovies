@@ -40,7 +40,7 @@
             <p class="plot-outline">{{movie.imdb_plot_outline}}</p>
 
             <ul>
-                {% for cast in movie.cached_cast()[:3] %}
+                {% for cast in movie.cached_cast()[:5] %}
                 <li><span class="actor">{{cast.person}}</span> as <span class="role">{{cast.role}}</span></li>
                 {% endfor %}
             </ul>
