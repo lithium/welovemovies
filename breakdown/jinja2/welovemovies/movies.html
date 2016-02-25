@@ -10,37 +10,37 @@
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{request.user.watched_count}}</h1>
-                <h6 class="text-muted">Watched</h6>
+                <h6 class="text-muted">Movies<br>Watched</h6>
             </div>
         </div>
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
-                <h6 class="text-muted">Left</h6>
+                <h6 class="text-muted">Movies<br>Left</h6>
             </div>
         </div>
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{request.user.unwatched_count}}</h1>
-                <h6 class="text-muted">Saved</h6>
+                <h6 class="text-muted">Movies<br>Saved</h6>
             </div>
         </div>
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{(challenge.how_many_movies - request.user.watched_count) - request.user.unwatched_count}}</h1>
-                <h6 class="text-muted">Needed</h6>
+                <h6 class="text-muted">Movies<br>Needed</h6>
             </div>
         </div>
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{challenge.days_left}}</h1>
-                <h6 class="text-muted">Days</h6>
+                <h6 class="text-muted">Days<br>Left</h6>
             </div>
         </div>
         <div class="col-md-2">
             <div class="card card-block">
                 <h1>{{"{:0.1f}".format(request.user.velocity)}}</h1>
-                <h6 class="text-muted">Velocity</h6>
+                <h6 class="text-muted">Watching<br>Per Day</h6>
             </div>
         </div>
     </div>
