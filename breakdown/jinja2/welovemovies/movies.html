@@ -7,40 +7,28 @@
 
 <div class="container hidden-sm-down">
     <div class="row card-stats">
-        <div class="col-md-2">
-            <div class="card card-block">
-                <h1>{{request.user.watched_count}}</h1>
-                <h6 class="text-muted">Movies<br>Watched</h6>
-            </div>
-        </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="card card-block">
                 <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
                 <h6 class="text-muted">Movies<br>Left</h6>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card card-block">
-                <h1>{{request.user.unwatched_count}}</h1>
-                <h6 class="text-muted">Movies<br>Saved</h6>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="card card-block">
-                <h1>{{(challenge.how_many_movies - request.user.watched_count) - request.user.unwatched_count}}</h1>
-                <h6 class="text-muted">Movies<br>Needed</h6>
-            </div>
-        </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="card card-block">
                 <h1>{{challenge.days_left}}</h1>
                 <h6 class="text-muted">Days<br>Left</h6>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="card card-block">
-                <h1>{{"{:0.1f}".format(request.user.velocity)}}</h1>
-                <h6 class="text-muted">Watching<br>Per Day</h6>
+                <h1>~{{"{:0.0f}".format(request.user.velocity*7)}}</h1>
+                <h6 class="text-muted">Watching<br>Per Week</h6>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>~{{"{:0.0f}".format(((challenge.how_many_movies - request.user.watched_count) / challenge.days_left)*7)}}</h1>
+                <h6 class="text-muted">Must Watch<br>Per Week</h6>
             </div>
         </div>
     </div>
@@ -64,7 +52,7 @@
     </div>
     <div class="row">
         <div class="col-sm-6" id="unwatched-list">
-            <h2>Saved</h2>
+            <h2>Saved <span>({{unwatched|length}})</span></h2>
             <div class="list">
             {% for viewing in unwatched %}
                 {{ viewing_row(viewing) }}
@@ -72,7 +60,7 @@
             </div>
         </div>
         <div class="col-sm-6" id="watched-list">
-            <h2>Watched</h2>
+            <h2>Watched <span>({{watched|length}})</span></h2>
             <div class="list">
             {% for viewing in watched %}
                 {{ viewing_row(viewing) }}

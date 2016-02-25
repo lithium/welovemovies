@@ -129,7 +129,7 @@ class ViewingList(LoginRequiredMixin, TemplateView):
         context = super(ViewingList, self).get_context_data(**kwargs)
         context.update({
             'viewing_list': self.request.user.cached_viewings(),
-            'watched': reversed(self.request.user.watched_movies()),
+            'watched': self.request.user.watched_movies(),
             'unwatched': self.request.user.unwatched_movies(),
             'challenge': self.request.user.active_challenge(self.request),
             'schedule': self.request.user.cached_schedule(self.request),
