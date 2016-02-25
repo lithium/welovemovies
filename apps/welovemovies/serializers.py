@@ -1,4 +1,6 @@
+import datetime
 from django.conf import settings
+from django.utils import timezone
 from rest_framework import serializers
 from hashlib import md5
 
@@ -22,3 +24,19 @@ class ImdbResultsSerializer(serializers.Serializer):
             representation[key.replace(' ','_')] = imdb_movie.get(key)
         return representation
 
+
+def seconds_since_epoch(dt=None, epoch=None):
+    if epoch is None:
+        epoch = datetime.datetime(1970,1,1)
+    if dt is None:
+        dt = timezone.now()
+    return (dt - epoch).total_seconds()
+
+
+class ViewingGraphSerializer(serializers.Serializer):
+    def to_representation(self, day_stats):
+        representation = {}
+        for k,v in day_stats.items():
+            d = seconds_since_epoch(datetime.datetime.combine(k, datetime.datetime.min.time()))
+            representation[int(d)] = len(v['viewings'])
+        return representation

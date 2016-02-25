@@ -58,6 +58,10 @@ module.exports = function(grunt) {
             '<%= destPath %>js/bootstrap.min.js': "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js",
             '<%= destPath %>js/moment.min.js': "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js",
             '<%= destPath %>js/list.min.js': "https://raw.githubusercontent.com/javve/list.js/v1.1.1/dist/list.js",
+
+            '<%= destPath %>js/d3.v3.min.js': "http://d3js.org/d3.v3.min.js",
+            '<%= destPath %>js/cal-heatmap.min.js': "https://raw.githubusercontent.com/wa0x6e/cal-heatmap/3.5.3/cal-heatmap.js",
+            '<%= destPath %>css/cal-heatmap.min.css': "https://raw.githubusercontent.com/wa0x6e/cal-heatmap/3.5.3/cal-heatmap.css",
         }
     });
 

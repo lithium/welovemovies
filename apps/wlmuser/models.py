@@ -1,4 +1,5 @@
 import cachemodel
+import datetime
 from django.conf import settings
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
@@ -131,6 +132,23 @@ class WlmUser(cachemodel.CacheModel, AbstractUser):
         timedelta = timezone.now().date() - first_movie.viewed_on
         velocity = float(watched_count) / float(timedelta.days)
         return velocity
+
+    def viewing_graph(self, request=None, challenge=None):
+        if challenge is None:
+            challenge = self.active_challenge(request=request)
+
+        days = {}
+        filtered_viewings = filter(lambda v: v.viewed_on >= challenge.start and v.viewed_on <= challenge.end, self.watched_movies())
+        for viewing in filtered_viewings:
+            item = days.get(viewing.viewed_on, {
+                'viewings': []
+            })
+            item['viewings'].append(viewing)
+            days[viewing.viewed_on] = item
+
+        return days
+
+
 
 
 

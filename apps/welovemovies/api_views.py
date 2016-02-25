@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from welovemovies.helpers import ImdbHelper
-from welovemovies.serializers import ImdbResultsSerializer
+from welovemovies.serializers import ImdbResultsSerializer, ViewingGraphSerializer
 
 
 class ImdbSearch(APIView):
@@ -19,4 +19,13 @@ class ImdbSearch(APIView):
         results = imdb.search_movie(q)
         serializer = ImdbResultsSerializer(results, many=True, context={'request': request})
 
+        return Response(serializer.data)
+
+
+class ViewingGraph(APIView):
+    def get(self, request):
+        """
+        """
+        stats = request.user.viewing_graph(request)
+        serializer = ViewingGraphSerializer(stats, context={'request': request})
         return Response(serializer.data)
