@@ -34,6 +34,11 @@ class StatsMixin(object):
         return len(self.watched_movies())
 
     @property
+    def recently_watched(self, count=3):
+        sort = sorted(self.watched_movies(), lambda a,b: cmp(a.viewed_on, b.viewed_on), reverse=True)
+        return sort[:count]
+
+    @property
     def velocity(self):
         if self.watched_count < 1:
             return 0
