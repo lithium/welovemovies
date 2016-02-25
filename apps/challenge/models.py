@@ -25,6 +25,12 @@ class Challenge(DefaultModel):
             whence = timezone.now().date()
         return (self.end - whence).days+1
 
+    @property
+    def day_number(self, whence=None):
+        if whence is None:
+            whence = timezone.now().date()
+        return (whence - self.start).days+1
+
 
 class ActiveChallenge(DefaultModel):
     challenge = models.ForeignKey('challenge.Challenge')

@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django_object_actions',
     'rest_framework',
 
-
+    'mainsite',
     'wlmuser',
     'welovemovies',
     'challenge',

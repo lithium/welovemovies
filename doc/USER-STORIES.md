@@ -38,7 +38,7 @@ User Profile Page:
 Homepage / leaderboard:
   - i can see movies recently watched by people
   - i can see a leaderboard of the top 5 people by movie count
-  - i can see overall stats of all users
+  x i can see overall stats of all users
 
 Public Profile Page
 

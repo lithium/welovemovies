@@ -1,7 +1,9 @@
+from django.contrib.sites.models import Site
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from mainsite.models import CachedSite
 from welovemovies.helpers import ImdbHelper
 from welovemovies.serializers import ImdbResultsSerializer, ViewingGraphSerializer
 
@@ -22,10 +24,18 @@ class ImdbSearch(APIView):
         return Response(serializer.data)
 
 
-class ViewingGraph(APIView):
+class UserViewingGraph(APIView):
     def get(self, request):
         """
         """
         stats = request.user.viewing_graph(request)
+        serializer = ViewingGraphSerializer(stats, context={'request': request})
+        return Response(serializer.data)
+
+
+class SiteViewingGraph(APIView):
+    def get(self, request):
+        cached_site = CachedSite.objects.get_current(request)
+        stats = cached_site.viewing_graph()
         serializer = ViewingGraphSerializer(stats, context={'request': request})
         return Response(serializer.data)

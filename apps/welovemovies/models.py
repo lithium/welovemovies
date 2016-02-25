@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from imdb.utils import RolesList
 
-from mainsite.models import DefaultModel
+from mainsite.models import DefaultModel, CachedSite
 from welovemovies.helpers import ImdbHelper
 
 
@@ -242,6 +242,7 @@ class Viewing(DefaultModel):
         self.viewer.publish()
         self.viewer.publish_method('favorite_directors')
         self.viewer.publish_method('favorite_genres')
+        CachedSite.objects.get_current().publish()
 
 
 class ViewingCast(DefaultModel):

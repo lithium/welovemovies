@@ -8,10 +8,11 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from mainsite.views import HomePageView, error404, error500
-from welovemovies.api_views import ViewingGraph
+from welovemovies.api_views import SiteViewingGraph, UserViewingGraph
 from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing, MySchedule, \
     CachedCoverImage
 from wlmuser.views import ProfileView
+
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -31,7 +32,8 @@ urlpatterns = [
     url(r'^search$', SearchResults.as_view(), name='search_results'),
     # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
 
-    url(r'^v1/user/graph$', ViewingGraph.as_view(), name='api_user_viewings'),
+    url(r'^v1/user/graph$', UserViewingGraph.as_view(), name='api_user_viewings'),
+    url(r'^v1/graph$', SiteViewingGraph.as_view(), name='api_user_viewings'),
 
     url(r'^movies$', ViewingList.as_view(), name='my_movies'),
     url(r'^movie/(?P<movieID>[^/]+)$', MovieDetail.as_view(), name='movie_detail'),
