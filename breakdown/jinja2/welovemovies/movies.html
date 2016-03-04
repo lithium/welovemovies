@@ -125,6 +125,28 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
 
+    var sortFunc = function(a,b) {
+        var x = curSort.order == 'asc' ? a : b;
+        var y = curSort.order == 'asc' ? b : a;
+        var key = curSort.current;
+
+        if (key == 'movie-date') {
+            x = curSort.order == 'asc' ? b : a;
+            y = curSort.order == 'asc' ? a : b;
+            if (!x._values['movie-date']) {
+                return -1;
+            }
+            if (!y._values['movie-date']) {
+                return -1;
+            }
+        }
+
+        return x._values[key].localeCompare(y._values[key], undefined, {
+          'ignorePunctuation': true,
+          'numeric': true,
+        })
+    };
+
     var listOptions = {
         valueNames: ['movie-title', 'movie-year', 'movie-date', 'movie-genres', 'movie-runtime'],
     };
@@ -143,7 +165,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var curSort = {current:'movie-date', order: 'desc'};
     watchedList.sort(curSort.current, {'order': curSort.order});
-    unwatchedList.sort(curSort.current, {'order': curSort.order});
+    unwatchedList.sort(curSort.current, {
+        'order': curSort.order,
+        'sortFunction': sortFunc
+    });
 
     var sortGroup = $('#viewing-list .sort');
     sortGroup.find('button').on('click', function(e) {
@@ -161,7 +186,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         watchedList.sort(curSort.current, {'order': curSort.order});
-        unwatchedList.sort(curSort.current, {'order': curSort.order});
+        unwatchedList.sort(curSort.current, {
+            'order': curSort.order,
+            'sortFunction': sortFunc
+        });
 
         self.addClass('btn-primary').removeClass('btn-secondary');
     });
