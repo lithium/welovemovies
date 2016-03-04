@@ -11,13 +11,13 @@
     <div class="row card-stats">
         <div class="col-md-3">
             <div class="card card-block">
-                <h1>{{request.user.watched_count}}</h1>
+                <h1>{{user.watched_count}}</h1>
                 <h6 class="text-muted">Movies<br>Watched</h6>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card card-block">
-                <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
+                <h1>{{challenge.how_many_movies - user.watched_count}}</h1>
                 <h6 class="text-muted">Movies<br>Left</h6>
             </div>
         </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="col-md-3">
             <div class="card card-block">
-                <h1>~{{"{:0.0f}".format(request.user.velocity*7)}}</h1>
+                <h1>~{{"{:0.0f}".format(user.velocity*7)}}</h1>
                 <h6 class="text-muted">Watching<br>Per Week</h6>
             </div>
         </div>
@@ -43,11 +43,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{request.user.favorite_director[0]}}</h1>
+                    <h1>{{user.favorite_director[0]}}</h1>
                     <h6 class="text-muted">Favorite Director</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for dir in request.user.favorite_directors()[:3] %}
+                    {% for dir in user.favorite_directors()[:3] %}
                     <li class="list-group-item">{{dir[0]}} <span class="pull-xs-right">{{dir[1]}}</span></li>
                     {% endfor %}
                 </ul>
@@ -57,11 +57,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{request.user.favorite_genre[0]}}</h1>
+                    <h1>{{user.favorite_genre[0]}}</h1>
                     <h6 class="text-muted">Favorite Genre</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for g in request.user.favorite_genres()[:3] %}
+                    {% for g in user.favorite_genres()[:3] %}
                     <li class="list-group-item">{{g[0]}} <span class="pull-xs-right">{{g[1]}}</span></li>
                     {% endfor %}
                 </ul>
@@ -71,11 +71,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{request.user.favorite_decade[0]}}s</h1>
+                    <h1>{{user.favorite_decade[0]}}s</h1>
                     <h6 class="text-muted">Favorite Decade</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for d in request.user.favorite_decades()[:3] %}
+                    {% for d in user.favorite_decades()[:3] %}
                     <li class="list-group-item">{{d[0]}}s <span class="pull-xs-right">{{d[1]}}</span></li>
                     {% endfor %}
                 </ul>
