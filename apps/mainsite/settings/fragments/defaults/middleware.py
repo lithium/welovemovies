@@ -14,5 +14,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'mainsite.middleware.TrailingSlashMiddleware',
+    'mainsite.middleware.TimezoneMiddleware',
 )
 APPEND_SLASH = False

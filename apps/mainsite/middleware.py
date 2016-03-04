@@ -1,4 +1,7 @@
+import pytz
 from django import http
+from django.utils import timezone
+
 
 class TrailingSlashMiddleware(object):
     def process_request(self, request):
@@ -12,3 +15,12 @@ class TrailingSlashMiddleware(object):
             if request.path != '/' and request.path[-1] == '/':
                 return http.HttpResponsePermanentRedirect(request.path[:-1])
         return None
+
+
+class TimezoneMiddleware(object):
+    def process_request(self, request):
+        tzname = request.user.timezone
+        if tzname:
+            timezone.activate(pytz.timezone(tzname))
+        else:
+            timezone.deactivate()

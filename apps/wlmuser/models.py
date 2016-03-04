@@ -1,18 +1,21 @@
 import cachemodel
-import datetime
-from django.conf import settings
+import pytz
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.utils import timezone
+from django.db import models
 
 from challenge.models import ActiveChallenge
 from mainsite.models import StatsMixin
 from welovemovies.models import Viewing, Schedule
 
 
+TZ_CHOICES = [(str(t), str(t)) for t in pytz.all_timezones]
+
+
 class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
     objects = UserManager()
+    timezone = models.CharField(max_length=254, default='US/Pacific', choices=TZ_CHOICES)
 
     class Meta:
         verbose_name = 'User'
