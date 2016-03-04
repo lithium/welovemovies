@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import UpdateView, TemplateView
+from django.http import Http404
+from django.views.generic import UpdateView, TemplateView, DetailView
 
 from wlmuser.forms import ProfileForm
 from wlmuser.models import WlmUser
@@ -21,17 +22,21 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return super(ProfileView, self).form_valid(form)
 
 
-class PublicProfile(TemplateView):
+class PublicProfile(DetailView):
     template_name = 'user/public_profile.html'
     model = WlmUser
 
     def get_object(self, queryset=None):
-        return self.request.user
+        try:
+            return WlmUser.cached.get(username=self.kwargs.get('username'))
+        except WlmUser.DoesNotExist:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         context = super(PublicProfile, self).get_context_data(**kwargs)
+        user = self.get_object()
         context.update({
-            'user': self.request.user,
-            'challenge': self.request.user.active_challenge(self.request),
+            'user': user,
+            'challenge': user.active_challenge(self.request),
         })
         return context

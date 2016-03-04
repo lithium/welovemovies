@@ -21,6 +21,10 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
+    def publish(self):
+        super(WlmUser, self).publish()
+        self.publish_by('username')
+
     @cachemodel.cached_method(auto_publish=True)
     def cached_viewings(self):
         return self.viewing_set.all()

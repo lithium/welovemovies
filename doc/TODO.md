@@ -10,6 +10,7 @@ Bug Fixes
   x fixup timezones to display in users local timezone
   - record viewing should be its own page
   - page titles
+  - removing user needs to publish cache
 
 
 
