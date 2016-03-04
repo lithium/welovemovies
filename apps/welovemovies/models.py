@@ -242,7 +242,12 @@ class Viewing(DefaultModel):
         self.viewer.publish()
         self.viewer.publish_method('favorite_directors')
         self.viewer.publish_method('favorite_genres')
-        CachedSite.objects.get_current().publish()
+        self.viewer.publish_method('favorite_decades')
+        site = CachedSite.objects.get_current()
+        site.publish()
+        site.publish_method('favorite_directors')
+        site.publish_method('favorite_genres')
+        site.publish_method('favorite_decades')
 
 
 class ViewingCast(DefaultModel):

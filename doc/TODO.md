@@ -4,10 +4,11 @@ TODO
 Bug Fixes
 ---------
   x review should be unilmited length text field
-  - record viewing should be its own page
   x movie list needs filtering
   x movie list design needs to afford for hundreds of items better
   x visible runtimes
+  - record viewing should be its own page
+  - fixup timezones to display in users local timezone
 
 
 
