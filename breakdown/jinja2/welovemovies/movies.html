@@ -89,9 +89,13 @@
             <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}"><span class="movie-title">{{viewing.movie.title}}</span>{%if viewing.movie.year%} (<span class="movie-year">{{viewing.movie.year}}</span>){%endif%}</a>
 
         </h4>
-        {%if viewing.status == 'unwatched' and viewing.scheduled_for %}
-        <h5>Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}} <span class="movie-date display-none">{{viewing.scheduled_for}}</span></h5>
-        {%endif%}
+        <h5>
+            {%if viewing.status == 'unwatched' and viewing.scheduled_for %}
+            Scheduled for {{viewing.scheduled_for.strftime("%b %d, %Y")}}
+            <span class="movie-date display-none">{{viewing.scheduled_for}}</span>
+            {%endif%}
+            {%if not viewing.viewed_on%}<a href="{{reverse('viewing_remove', kwargs={'pk':viewing.pk})}}" class="btn btn-sm btn-secondary">Remove</a>{%endif%}
+        </h5>
         {%if (viewing.status == 'watched' or viewing.status == 'rewatched') %}
         <h5>{{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
             {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}

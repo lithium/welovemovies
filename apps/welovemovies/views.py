@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView, RedirectView
+from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView, RedirectView, DeleteView
 
 from welovemovies.forms import ScheduleViewingForm, RecordViewingForm, ScheduleForm
 from welovemovies.helpers import ImdbHelper
@@ -177,3 +177,12 @@ class CachedCoverImage(RedirectView):
         digest = md5(url).hexdigest()
         return "{}imdb/image/{}".format(settings.MEDIA_URL, digest)
 
+
+class RemoveViewing(DeleteView):
+    success_url = reverse_lazy('my_movies')
+
+    def get_object(self, queryset=None):
+        return Viewing.cached.get(pk=self.kwargs.get('pk'))
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)

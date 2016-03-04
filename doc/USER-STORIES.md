@@ -13,7 +13,7 @@ My Movies Page:
   x i can see a list of all my viewings 
   x i can filter the list by watched/unwatched
   x i can search my unwatched list
-  - i can cancel a unwatched viewing
+  x i can cancel a unwatched viewing
 
 
 Record viewing:
