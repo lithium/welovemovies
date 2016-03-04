@@ -7,8 +7,9 @@ Bug Fixes
   x movie list needs filtering
   x movie list design needs to afford for hundreds of items better
   x visible runtimes
-  - record viewing should be its own page
   x fixup timezones to display in users local timezone
+  - record viewing should be its own page
+  - page titles
 
 
 

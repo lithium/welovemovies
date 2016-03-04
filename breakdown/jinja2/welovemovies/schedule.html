@@ -10,45 +10,7 @@
 
     <form method="POST">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
-        <div class="row hidden-md-down">
-            <div class="col-xs-4">
-                <label class="form-control-label">&nbsp;</label>
-                    <h2>Weekly Schedule</h2>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Mon</label>
-                <input type="number" class="form-control" value="{{form.monday.value()}}" name="monday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Tue</label>
-                <input type="number" class="form-control" value="{{form.tuesday.value()}}" name="tuesday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Wed</label>
-                <input type="number" class="form-control" value="{{form.wednesday.value()}}" name="wednesday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Thu</label>
-                <input type="number" class="form-control" value="{{form.thursday.value()}}" name="thursday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Fri</label>
-                <input type="number" class="form-control" value="{{form.friday.value()}}" name="friday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Sat</label>
-                <input type="number" class="form-control" value="{{form.saturday.value()}}" name="saturday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">Sun</label>
-                <input type="number" class="form-control" value="{{form.sunday.value()}}" name="sunday" required>
-            </div>
-            <div class="col-xs-1">
-                <label class="form-control-label">&nbsp;</label>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-        </div>
-        <div class="row hidden-lg-up">
+        <div class="row ">
             <div class="col-xs-3">
                 <label class="form-control-label">Mon</label>
                 <input type="number" class="form-control" value="{{form.monday.value()}}" name="monday" required>
@@ -78,7 +40,7 @@
                 <input type="number" class="form-control" value="{{form.sunday.value()}}" name="sunday" required>
             </div>
             <div class="col-xs-3">
-                <label class="form-control-label">&nbsp;</label>
+                <p>&nbsp;</p>
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div>
