@@ -1,39 +1,40 @@
-{% extends "base.html" %}
+{%extends "base.html"%}
 
-{% block content %}
+{%block content%}
+
 <div class="container">
-    <h1>This is We Love Movies</h1>
+    <h1>{{user}} Loves Movies</h1>
 </div>
+
 
 <div class="container">
     <div class="row card-stats">
-        <div class="col-sm-3">
+        <div class="col-md-3">
             <div class="card card-block">
-                <h1>#{{challenge.day_number}}</h1>
-                <h6 class="text-muted">Day<br>Number</h6>
+                <h1>{{request.user.watched_count}}</h1>
+                <h6 class="text-muted">Movies<br>Watched</h6>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>{{challenge.how_many_movies - request.user.watched_count}}</h1>
+                <h6 class="text-muted">Movies<br>Left</h6>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="card card-block">
                 <h1>{{challenge.days_left}}</h1>
                 <h6 class="text-muted">Days<br>Left</h6>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-3">
             <div class="card card-block">
-                <h1>{{cached_site.watched_count}}</h1>
-                <h6 class="text-muted">Total<br>Watched</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{"{:0.1f}".format(cached_site.velocity)}}</h1>
-                <h6 class="text-muted">Watched<br>Per Day</h6>
+                <h1>~{{"{:0.0f}".format(request.user.velocity*7)}}</h1>
+                <h6 class="text-muted">Watching<br>Per Week</h6>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <div class="container">
@@ -42,11 +43,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{cached_site.favorite_director[0]}}</h1>
+                    <h1>{{request.user.favorite_director[0]}}</h1>
                     <h6 class="text-muted">Favorite Director</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for dir in cached_site.favorite_directors()[:3] %}
+                    {% for dir in request.user.favorite_directors()[:3] %}
                     <li class="list-group-item">{{dir[0]}} <span class="pull-xs-right">{{dir[1]}}</span></li>
                     {% endfor %}
                 </ul>
@@ -56,11 +57,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{cached_site.favorite_genre[0]}}</h1>
+                    <h1>{{request.user.favorite_genre[0]}}</h1>
                     <h6 class="text-muted">Favorite Genre</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for g in cached_site.favorite_genres()[:3] %}
+                    {% for g in request.user.favorite_genres()[:3] %}
                     <li class="list-group-item">{{g[0]}} <span class="pull-xs-right">{{g[1]}}</span></li>
                     {% endfor %}
                 </ul>
@@ -70,11 +71,11 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <h1>{{cached_site.favorite_decade[0]}}s</h1>
+                    <h1>{{request.user.favorite_decade[0]}}s</h1>
                     <h6 class="text-muted">Favorite Decade</h6>
                 </div>
                 <ul class="list-group list-group-flush">
-                    {% for d in cached_site.favorite_decades()[:3] %}
+                    {% for d in request.user.favorite_decades()[:3] %}
                     <li class="list-group-item">{{d[0]}}s <span class="pull-xs-right">{{d[1]}}</span></li>
                     {% endfor %}
                 </ul>
@@ -86,11 +87,12 @@
 </div>
 
 <hr>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-5">
             <h2>Recently Watched</h2>
-            {% for viewing in cached_site.recently_watched %}
+            {% for viewing in user.recently_watched %}
             <div class="row viewing">
                 <div class="col-xs-2 cover">
                     <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">
@@ -129,8 +131,6 @@
     </div>
 
 </div>
-
-
 {%endblock%}
 
 
@@ -140,7 +140,7 @@
 <script>
     var cal = new CalHeatMap();
     cal.init({
-        data: '/v1/graph',
+        data: '/v1/user/graph',
         itemSelector: '#graph-container',
         itemName: ['movie', 'movies'],
         start: new Date(2016,1,1),

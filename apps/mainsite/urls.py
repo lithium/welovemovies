@@ -11,8 +11,7 @@ from mainsite.views import HomePageView, error404, error500
 from welovemovies.api_views import SiteViewingGraph, UserViewingGraph
 from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing, MySchedule, \
     CachedCoverImage, RemoveViewing
-from wlmuser.views import ProfileView
-
+from wlmuser.views import ProfileView, PublicProfile
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -28,21 +27,23 @@ urlpatterns = [
     # allauth
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/$', ProfileView.as_view(), name='account_profile'),
+    url(r'^profile/(?P<username>[^/]+)$', PublicProfile.as_view(), name='public_profile'),
 
+    # search results
     url(r'^search$', SearchResults.as_view(), name='search_results'),
-    # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
 
+    # rest api
+    # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
     url(r'^v1/user/graph$', UserViewingGraph.as_view(), name='api_user_viewings'),
     url(r'^v1/graph$', SiteViewingGraph.as_view(), name='api_user_viewings'),
 
+    # viewings
     url(r'^movies$', ViewingList.as_view(), name='my_movies'),
     url(r'^movie/(?P<movieID>[^/]+)$', MovieDetail.as_view(), name='movie_detail'),
     url(r'^movie/(?P<movieID>[^/]+)/schedule$', ScheduleViewing.as_view(), name='movie_schedule'),
     url(r'^movie/(?P<movieID>[^/]+)/record$', RecordViewing.as_view(), name='movie_record'),
     url(r'^movie/(?P<movieID>[^/]+)/cover$', CachedCoverImage.as_view(), name='movie_cover'),
-
     url(r'^viewing/(?P<pk>[^/]+)/remove$', RemoveViewing.as_view(), name='viewing_remove'),
-
 
     url(r'^schedule$', MySchedule.as_view(), name='my_schedule'),
 
