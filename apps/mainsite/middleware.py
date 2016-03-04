@@ -19,8 +19,7 @@ class TrailingSlashMiddleware(object):
 
 class TimezoneMiddleware(object):
     def process_request(self, request):
-        tzname = request.user.timezone
-        if tzname:
-            timezone.activate(pytz.timezone(tzname))
+        if request.user.is_authenticated():
+            timezone.activate(pytz.timezone(request.user.timezone))
         else:
             timezone.deactivate()
