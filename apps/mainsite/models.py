@@ -45,7 +45,8 @@ class StatsMixin(object):
         sort = sorted(self.watched_movies(), lambda a,b: cmp(a.viewed_on, b.viewed_on))
         first_movie = sort[0]
         timedelta = timezone.now().date() - first_movie.viewed_on
-        velocity = float(self.watched_count) / float(timedelta.days)
+        num_days = float(timedelta.days)
+        velocity = (float(self.watched_count) / num_days) if num_days > 0 else 0
         return velocity
 
     @cachemodel.cached_method(auto_publish=False)
