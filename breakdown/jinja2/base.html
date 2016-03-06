@@ -25,12 +25,14 @@
                 <a class="navbar-brand" href="{{ reverse('home') }}">We Love Movies</a>
                 <div class="collapse navbar-toggleable-xs" id="navbar-header">
                     <ul class="nav navbar-nav">
+                        {% if request.user.is_authenticated() %}
                         <li class="nav-item {%if active_tab == 'movies'%}active{%endif%}">
                             <a class="nav-link" href="{{ reverse('my_movies') }}">Movies</a>
                         </li>
                         <li class="nav-item {%if active_tab == 'schedule'%}active{%endif%}">
                             <a class="nav-link" href="{{ reverse('my_schedule') }}">Schedule</a>
                         </li>
+                        {% endif %}
                     </ul>
 
                     {% if request.user.is_authenticated() %}

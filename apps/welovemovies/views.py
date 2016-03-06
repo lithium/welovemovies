@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, FormView, TemplateView, UpdateView, RedirectView, DeleteView
 
+from mainsite.models import CachedSite
 from welovemovies.forms import ScheduleViewingForm, RecordViewingForm, ScheduleForm
 from welovemovies.helpers import ImdbHelper
 from welovemovies.models import Movie, Viewing, Schedule
@@ -198,3 +199,22 @@ class RemoveViewing(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+
+class AllViewings(ListView):
+    model = Viewing
+    context_object_name = 'viewings'
+    template_name = 'welovemovies/all_viewings.html'
+
+    def get_queryset(self):
+        site = CachedSite.objects.get_current(self.request)
+        movies = sorted(site.watched_movies(), lambda a,b: cmp(b.viewed_on, a.viewed_on))
+        return movies
+
+    def get_context_data(self, **kwargs):
+        context = super(AllViewings, self).get_context_data(**kwargs)
+        site = CachedSite.objects.get_current(self.request)
+        context.update({
+            'movie_count': site.watched_count,
+        })
+        return context

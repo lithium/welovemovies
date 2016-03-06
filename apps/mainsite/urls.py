@@ -10,7 +10,7 @@ from django.views.generic.base import RedirectView
 from mainsite.views import HomePageView, error404, error500
 from welovemovies.api_views import SiteViewingGraph, UserViewingGraph
 from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing, MySchedule, \
-    CachedCoverImage, RemoveViewing
+    CachedCoverImage, RemoveViewing, AllViewings
 from wlmuser.views import ProfileView, PublicProfile, PublicMovieList
 
 handler404 = 'mainsite.views.error404'
@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^schedule$', MySchedule.as_view(), name='my_schedule'),
 
     url(r'^$', HomePageView.as_view(), name='home'),
+    url(r'^viewings$', AllViewings.as_view(), name='all_viewings'),
 ]
 
 

@@ -1,0 +1,45 @@
+{%extends "base.html"%}
+
+{%block content%}
+<div class="container">
+    <h1>We Love Movies</h1>
+</div>
+
+<div class="container movie-list">
+
+    <table class="table table-hover ">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Who</th>
+                <th>Movie</th>
+                <th class="hidden-xs-down">Rating</th>
+                <th class="hidden-sm-down">Viewed</th>
+            </tr>
+        </thead>
+        <tbody>
+        {%for viewing in viewings%}
+        <tr>
+            <th scope="row">
+                #{{movie_count - loop.index0}}
+            </th>
+            <td class="avatar">
+                <img class="img-circle" width="32" src="{{viewing.viewer.avatar_url}}">
+                <p>{{viewing.viewer}}</p>
+            </td>
+            <td>
+                <div class="pull-xs-left cover">
+                    <img class="img-rounded" height="64" src="{{viewing.movie.cached_cover_url}}"/>
+                </div>
+                <h5>{{viewing.movie.title}} ({{viewing.movie.year}})</h5>
+                <p>{{viewing.summary}}</p>
+            </td>
+            <td class="hidden-xs-down rating-column">{{viewing.get_rating_display()}}</td>
+            <td class="hidden-sm-down">{{viewing.viewed_on.strftime('%b %-d')}}</td>
+        </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+
+</div>
+{%endblock%}
