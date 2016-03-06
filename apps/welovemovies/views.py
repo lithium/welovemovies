@@ -95,13 +95,20 @@ class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
 class RecordViewing(UpdateView):
     model = Viewing
     form_class = RecordViewingForm
-    http_method_names = ['post']
+    http_method_names = ['post', 'get']
+    template_name = 'welovemovies/movie_record.html'
 
     def get_movie(self):
         try:
             return Movie.cached.get(imdb_id=self.kwargs.get('movieID'))
         except Movie.DoesNotExist:
             raise Http404
+
+    def get_initial(self):
+        initial = super(RecordViewing, self).get_initial()
+        viewing = self.get_object()
+        initial['seen_before'] = (viewing.status == Viewing.STATUS_REWATCHED)
+        return initial
 
     def get_object(self):
         movie = self.get_movie()
@@ -113,7 +120,7 @@ class RecordViewing(UpdateView):
 
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
-        return HttpResponseRedirect(self.get_success_url())
+        return super(RecordViewing, self).form_invalid(form)
 
     def form_valid(self, form):
         viewing = form.save(commit=False)

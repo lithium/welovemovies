@@ -66,9 +66,19 @@
 
 .movie-detail-container {
     img.full-cover {
-        width: 197px;
-        height: 292px;
+        height: 300px;
     }
+
+    .cover-image {
+        text-align: center;
+    }
+}
+
+.movie-detail-container.record-viewing {
+    img.full-cover {
+        height: 200px;
+    }
+
 }
 
 .scheduling.container {
