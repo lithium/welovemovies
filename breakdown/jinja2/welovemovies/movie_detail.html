@@ -49,6 +49,7 @@
 
 </div>
 
+{%if request.user.is_authenticated() %}
 <div class="container scheduling">
 
     {%if not viewing or not viewing.viewed_on%}
@@ -98,6 +99,7 @@
 {%endif%}
 
 </div>
+{%endif%}
 
 
 <h3 style="margin-top:2rem;">Viewings</h3>

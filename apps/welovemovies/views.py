@@ -50,10 +50,11 @@ class MovieDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(MovieDetail, self).get_context_data(**kwargs)
         viewing = None
-        try:
-            viewing = Viewing.cached.get(movie=self.get_object(), viewer=self.request.user)
-        except Viewing.DoesNotExist:
-            pass
+        if self.request.user.is_authenticated():
+            try:
+                viewing = Viewing.cached.get(movie=self.get_object(), viewer=self.request.user)
+            except Viewing.DoesNotExist:
+                pass
 
         context.update({
             'viewing': viewing
