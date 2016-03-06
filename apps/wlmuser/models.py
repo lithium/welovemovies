@@ -3,6 +3,7 @@ import pytz
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from challenge.models import ActiveChallenge
@@ -24,6 +25,9 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
     def publish(self):
         super(WlmUser, self).publish()
         self.publish_by('username')
+
+    def get_absolute_url(self):
+        return reverse('public_profile', kwargs={'username': self.username})
 
     @cachemodel.cached_method(auto_publish=True)
     def cached_viewings(self):

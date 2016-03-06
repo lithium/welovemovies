@@ -117,7 +117,7 @@
                         <span class="movie-genres">{{", ".join(viewing.movie.genres)}}</span>
                         {%endif%}
                     </h6>
-                    <h5>{{viewing.viewer}} {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
+                    <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a> {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
                         {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
                     </h5>
                 </div>
