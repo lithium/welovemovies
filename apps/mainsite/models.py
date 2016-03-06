@@ -35,9 +35,12 @@ class StatsMixin(object):
         return len(self.watched_movies())
 
     @property
-    def recently_watched(self, count=3):
-        sort = sorted(self.watched_movies(), lambda a,b: cmp(a.viewed_on, b.viewed_on), reverse=True)
-        return sort[:count]
+    def recently_watched(self):
+        return sorted(self.watched_movies(), lambda a,b: cmp(b.viewed_on, a.viewed_on))
+
+    @property
+    def recently_loved(self):
+        return filter(lambda v: v.rating == 'love', self.recently_watched)
 
     @property
     def velocity(self):
@@ -105,6 +108,7 @@ class StatsMixin(object):
         return sorted_items
 
 
+
 class CachedSiteManager(SiteManager):
     def get_current(self, request=None):
         site = super(CachedSiteManager, self).get_current(request=request)
@@ -140,15 +144,13 @@ class CachedSite(StatsMixin, cachemodel.CacheModel, Site):
 
     @cachemodel.cached_method(auto_publish=False)
     def popular_movies(self):
-        from welovemovies.models import Viewing
         index = {}
         for v in self.watched_movies():
             index[v.movie] = index.get(v.movie, 0)+1
         sorted_items = sorted(index.items(), lambda x,y: cmp(y[1], x[1]))
         filtered_items = filter(lambda m: m[1] > 1, sorted_items)
         if len(filtered_items) < 1:
-            # if no movies have been watched more than one person, just show movies that were loved
-            filtered_items = map(lambda v: (v.movie, 1), filter(lambda v: v.rating == Viewing.RATING_LOVE, self.watched_movies()))
+            return [(v.movie, 1) for v in self.recently_loved]
         return filtered_items
 
 

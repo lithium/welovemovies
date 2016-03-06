@@ -6,119 +6,123 @@
 </div>
 
 <div class="container">
-    <div class="row card-stats">
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>#{{challenge.day_number}}</h1>
-                <h6 class="text-muted">Day<br>Number</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{challenge.days_left}}</h1>
-                <h6 class="text-muted">Days<br>Left</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{cached_site.watched_count}}</h1>
-                <h6 class="text-muted">Total<br>Watched</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{"{:0.1f}".format(cached_site.velocity)}}</h1>
-                <h6 class="text-muted">Watched<br>Per Day</h6>
-            </div>
-        </div>
-    </div>
-</div>
+    <div class="col-sm-11">
 
-
-
-<hr>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6">
-            <h2>Recently Watched <a href="{{reverse('all_viewings')}}">All</a></h2>
-            {% for viewing in cached_site.recently_watched %}
-                {% call watched_row(viewing.movie) %}
-                <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a> {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}
-                    {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
-                </h5>
-                {% endcall %}
-            {%endfor%}
+        <div class="container">
+          <div class="row card-stats">
+              <div class="col-sm-3">
+                  <div class="card card-block">
+                      <h1>#{{challenge.day_number}}</h1>
+                      <h6 class="text-muted">Day<br>Number</h6>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="card card-block">
+                      <h1>{{challenge.days_left}}</h1>
+                      <h6 class="text-muted">Days<br>Left</h6>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="card card-block">
+                      <h1>{{cached_site.watched_count}}</h1>
+                      <h6 class="text-muted">Total<br>Watched</h6>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="card card-block">
+                      <h1>{{"{:0.1f}".format(cached_site.velocity)}}</h1>
+                      <h6 class="text-muted">Watched<br>Per Day</h6>
+                  </div>
+              </div>
+          </div>
         </div>
-        <div class="col-sm-6">
-            <h2>Popular Movies</h2>
-            {% for movie, count in cached_site.popular_movies()[:3] %}
-                {% call watched_row(movie) %}
-                <h5>
-                    Watched {{count}} times.
-                </h5>
-                {% endcall %}
-            {% endfor %}
-        </div>
-    </div>
 
-</div>
-
-<hr>
-<div class="container">
-    <div class="row card-stats">
-
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-block">
-                    <h1>{{cached_site.favorite_director[0]}}</h1>
-                    <h6 class="text-muted">Favorite Director</h6>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>Recently Watched <a href="{{reverse('all_viewings')}}">All</a></h2>
+                    {% for viewing in cached_site.recently_watched[:3] %}
+                    {% call watched_row(viewing.movie) %}
+                    <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a>
+                        {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}
+                        {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
+                    </h5>
+                    {% endcall %}
+                    {%endfor%}
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for dir in cached_site.favorite_directors()[:3] %}
-                    <li class="list-group-item">{{dir[0]}} <span class="pull-xs-right">{{dir[1]}}</span></li>
+                <div class="col-sm-6">
+                    <h2>Popular Movies</h2>
+                    {% for movie, count in cached_site.popular_movies()[:3] %}
+                    {% call watched_row(movie) %}
+                    <h5>
+                        Watched {{count}} times.
+                    </h5>
+                    {% endcall %}
                     {% endfor %}
-                </ul>
+                </div>
             </div>
+
         </div>
 
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-block">
-                    <h1>{{cached_site.favorite_genre[0]}}</h1>
-                    <h6 class="text-muted">Favorite Genre</h6>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for g in cached_site.favorite_genres()[:3] %}
-                    <li class="list-group-item">{{g[0]}} <span class="pull-xs-right">{{g[1]}}</span></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+        <hr>
+        <div class="container">
+          <div class="row card-stats">
 
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-block">
-                    <h1>{{cached_site.favorite_decade[0]}}s</h1>
-                    <h6 class="text-muted">Favorite Decade</h6>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for d in cached_site.favorite_decades()[:3] %}
-                    <li class="list-group-item">{{d[0]}}s <span class="pull-xs-right">{{d[1]}}</span></li>
-                    {% endfor %}
-                </ul>
-            </div>
+              <div class="col-sm-4">
+                  <div class="card">
+                      <div class="card-block">
+                          <h1>{{cached_site.favorite_director[0]}}</h1>
+                          <h6 class="text-muted">Favorite Director</h6>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                          {% for dir in cached_site.favorite_directors()[:3] %}
+                          <li class="list-group-item">{{dir[0]}} <span class="pull-xs-right">{{dir[1]}}</span>
+                          </li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+
+              <div class="col-sm-4">
+                  <div class="card">
+                      <div class="card-block">
+                          <h1>{{cached_site.favorite_genre[0]}}</h1>
+                          <h6 class="text-muted">Favorite Genre</h6>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                          {% for g in cached_site.favorite_genres()[:3] %}
+                          <li class="list-group-item">{{g[0]}} <span class="pull-xs-right">{{g[1]}}</span>
+                          </li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+
+              <div class="col-sm-4">
+                  <div class="card">
+                      <div class="card-block">
+                          <h1>{{cached_site.favorite_decade[0]}}s</h1>
+                          <h6 class="text-muted">Favorite Decade</h6>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                          {% for d in cached_site.favorite_decades()[:3] %}
+                          <li class="list-group-item">{{d[0]}}s <span class="pull-xs-right">{{d[1]}}</span>
+                          </li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+
+          </div>
         </div>
 
     </div>
-
-</div>
-
-<div class="container">
-
-    <div class="row">
-        <div class="col-sm-7" id="graph-container"></div>
+    <div class="col-sm-1">
+        <div id="graph-container"></div>
     </div>
 </div>
+
 {%endblock%}
 
 
@@ -131,12 +135,22 @@
         data: '/v1/graph',
         itemSelector: '#graph-container',
         itemName: ['movie', 'movies'],
-        start: new Date(2016,1,1),
-        domain: "year",
-        subDomain: "day",
-        range: 1,
+        weekStartOnMonday: false,
+        start: new Date(2016,0,1),
+        verticalOrientation: true,
+        domain: "month",
+        subDomain: "x_day",
+        cellSize: 10,
+        range: 12,
         legend: [1,2,3,4],
         displayLegend: false,
+        label: {
+            position: "right",
+            offset: {
+                x: 5,
+                y: 25
+            }
+        },
     });
 </script>
 {% endblock %}
