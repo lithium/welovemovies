@@ -170,16 +170,38 @@
 <h3 style="margin-top:2rem;">Viewings</h3>
 <div class="container">
     {%for viewing in movie.cached_viewings()%}
-    <div class="row">
         {%if viewing.status == 'unwatched'%}
-        <p>{%if viewing.viewer == request.user%}You want{%else%}{{viewing.viewer}} wants{%endif%} to watch this{%if viewing.scheduled_for%} on {{viewing.scheduled_for.strftime("%b %d, %Y")}}{%endif%}.</p>
+        <div class="row">
+            <div class="col-xs-2">
+                <img class="img-circle pull-xs-right" width="32" src="{{viewing.viewer.avatar_url}}"/>
+            </div>
+            <div class="col-xs-10">
+                {%if viewing.viewer == request.user%}
+                You want
+                {%else%}
+                <a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a> wants
+                {%endif%}
+                to watch this.
+            </div>
+        </div>
         {%elif viewing.status == 'watched' or viewing.status == 'rewatched'%}
-        <p>
-        {%if viewing.viewer == request.user%}You{%else%}{{viewing.viewer}}{%endif%} {%if viewing.status == 'rewatched'%}re-{%endif%}watched this{%if viewing.viewed_on%} on {{viewing.viewed_on.strftime("%b %d, %Y")}}{%endif%}.
-        {{ viewing.get_rating_display() }}.
-            <span class="text-muted" data-toggle="collapse" href="#viewing-summary-{{viewing.pk}}" aria-expanded="false" aria-controls="viewing-summary-{{viewing.pk}}">review</span>
-        </p>
-        <blockquote id="viewing-summary-{{viewing.pk}}" class="blockquote collapse"><p>{{viewing.summary}}</p></blockquote>
+        <div class="row">
+            <div class="col-xs-2">
+                <img class="img-circle pull-xs-right" width="32" src="{{viewing.viewer.avatar_url}}"/>
+            </div>
+            <div class="col-xs-10">
+                <a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a>
+                {%if viewing.status == 'rewatched'%}re-{%endif%}watched this{%if viewing.viewed_on%} on {{viewing.viewed_on.strftime("%b %d, %Y")}}{%endif%}.
+                {{ viewing.get_rating_display() }}.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-10">
+                <blockquote>{{viewing.summary}}</blockquote>
+            </div>
+        </div>
         {%else%}
         <p>{{viewing}}</p>
         {%endif%}
