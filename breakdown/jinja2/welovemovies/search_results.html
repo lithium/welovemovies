@@ -7,18 +7,25 @@
 
     {% for result in results %}
     <div class="row search-result">
+        <div class="col-xs-2 cover">
+
             <a href="{{ reverse('movie_detail', kwargs={'movieID': result.id}) }}">
-            <img class="img-rounded pull-xs-left" src="{{reverse('movie_cover', kwargs={'movieID': result.id})}}">
+                <img class="img-rounded " src="{{reverse('movie_cover', kwargs={'movieID': result.id})}}">
             </a>
+            <div class="imdb-link">
+                <a href="http://imdb.com/title/tt{{result.id}}" target="_blank" class="card-link">IMDb</a>
+            </div>
+        </div>
+        <div class="col-xs-10 description">
+
             <h5>
                 <a href="{{ reverse('movie_detail', kwargs={'movieID': result.id}) }}">{{result.title}}</a> ({{result.year}})
             </h5>
             <p>
                 <a class="btn btn-sm btn-primary" href="{{reverse('movie_schedule', kwargs={'movieID': result.id})}}">Save</a>
-                <a class="btn btn-sm btn-secondary" target="_blank" href="{{result.url}}">IMDb</a>
+                <a class="btn btn-sm btn-secondary" href="{{reverse('movie_record', kwargs={'movieID': result.id})}}">I watched this</a>
             </p>
-            {%if result.genres%}<h6 class="text-muted">{{", ".join(result.genres)}}</h6>{%endif%}
-            {%if result.plot_outline%}<p>{{result.plot_outline}}</p>{%endif%}
+        </div>
     </div>
     {%endfor%}
 

@@ -79,6 +79,8 @@ class Movie(DefaultModel):
 
             i = 1
             for cast in imdb_movie.get('cast', []):
+                if max_cast and i >= max_cast:
+                    break
                 person, created = Person.cached.get_or_create(imdb_id=cast.getID())
                 person.name = cast.get('name')
                 person.save()
@@ -91,8 +93,6 @@ class Movie(DefaultModel):
                     movie_cast.role = role.get('name')
                 movie_cast.ordering = i
                 movie_cast.save()
-                if max_cast and i >= max_cast:
-                    break
                 i += 1
 
             return True

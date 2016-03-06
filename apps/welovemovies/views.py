@@ -99,10 +99,11 @@ class RecordViewing(UpdateView):
     template_name = 'welovemovies/movie_record.html'
 
     def get_movie(self):
-        try:
-            return Movie.cached.get(imdb_id=self.kwargs.get('movieID'))
-        except Movie.DoesNotExist:
-            raise Http404
+        movieID = self.kwargs.get('movieID')
+        movie, created = Movie.cached.get_or_create(imdb_id=movieID)
+        if created:
+            movie.fetch_imdb(max_cast=0)
+        return movie
 
     def get_initial(self):
         initial = super(RecordViewing, self).get_initial()
