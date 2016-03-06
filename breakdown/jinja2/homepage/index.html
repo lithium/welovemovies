@@ -36,6 +36,34 @@
 
 
 
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Recently Watched</h2>
+            {% for viewing in cached_site.recently_watched %}
+                {% call watched_row(viewing.movie) %}
+                <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a> {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}
+                    {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
+                </h5>
+                {% endcall %}
+            {%endfor%}
+        </div>
+        <div class="col-sm-6">
+            <h2>Popular Movies</h2>
+            {% for movie, count in cached_site.popular_movies()[:3] %}
+                {% call watched_row(movie) %}
+                <h5>
+                    Watched {{count}} times.
+                </h5>
+                {% endcall %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<hr>
 <div class="container">
     <div class="row card-stats">
 
@@ -85,52 +113,12 @@
 
 </div>
 
-<hr>
 <div class="container">
+
     <div class="row">
-        <div class="col-sm-5">
-            <h2>Recently Watched</h2>
-            {% for viewing in cached_site.recently_watched %}
-            <div class="row viewing">
-                <div class="col-xs-2 cover">
-                    <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}">
-                        <img class="img-rounded" src="{{ viewing.movie.cached_cover_url }}" >
-                    </a>
-                    <div class="imdb-link">
-                        <a href="http://imdb.com/title/tt{{viewing.movie.imdb_id}}" target="_blank" class="card-link">IMDb</a>
-                    </div>
-                </div>
-                <div class="col-xs-10 description">
-                    <h4>
-                        <a href="{{ reverse('movie_detail', kwargs={'movieID': viewing.movie.imdb_id}) }}"><span class="movie-title">{{viewing.movie.title}}</span>{%if viewing.movie.year%} (<span class="movie-year">{{viewing.movie.year}}</span>){%endif%}</a>
-                    </h4>
-                    <h6 class="text-muted">
-
-                        {%if viewing.movie.runtime %}
-                        <span class="movie-runtime">
-                        {{ viewing.movie.get_runtime_display() }}
-                        </span>
-                        {%endif%}
-
-                        {%if viewing.movie.genres%}
-                        {%if viewing.movie.runtime%}<strong>&nbsp;|&nbsp;</strong>{%endif%}
-                        <span class="movie-genres">{{", ".join(viewing.movie.genres)}}</span>
-                        {%endif%}
-                    </h6>
-                    <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a> {{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
-                        {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
-                    </h5>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="col-sm-7" id="graph-container">
-        </div>
+        <div class="col-sm-7" id="graph-container"></div>
     </div>
-
 </div>
-
-
 {%endblock%}
 
 
@@ -152,3 +140,39 @@
     });
 </script>
 {% endblock %}
+
+
+{% macro watched_row(movie) %}
+
+<div class="row viewing">
+    <div class="col-xs-2 cover">
+        <a href="{{ reverse('movie_detail', kwargs={'movieID': movie.imdb_id}) }}">
+            <img class="img-rounded" src="{{ movie.cached_cover_url }}" >
+        </a>
+        <div class="imdb-link">
+            <a href="http://imdb.com/title/tt{{movie.imdb_id}}" target="_blank" class="card-link">IMDb</a>
+        </div>
+    </div>
+    <div class="col-xs-10 description">
+        <h4>
+            <a href="{{ reverse('movie_detail', kwargs={'movieID': movie.imdb_id}) }}"><span class="movie-title">{{movie.title}}</span>{%if movie.year%} (<span class="movie-year">{{movie.year}}</span>){%endif%}</a>
+        </h4>
+        <h6 class="text-muted">
+
+            {%if movie.runtime %}
+                        <span class="movie-runtime">
+                        {{ movie.get_runtime_display() }}
+                        </span>
+            {%endif%}
+
+            {%if movie.genres%}
+            {%if movie.runtime%}<strong>&nbsp;|&nbsp;</strong>{%endif%}
+            <span class="movie-genres">{{", ".join(movie.genres)}}</span>
+            {%endif%}
+        </h6>
+        {%if caller%}
+        {{caller()}}
+        {%endif%}
+    </div>
+</div>
+{% endmacro %}

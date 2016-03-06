@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 
 
+
 class ActiveModelManager(cachemodel.CacheModelManager):
     def get_queryset(self):
         qs = super(ActiveModelManager, self).get_queryset()
@@ -136,3 +137,18 @@ class CachedSite(StatsMixin, cachemodel.CacheModel, Site):
             item['viewings'].append(viewing)
             days[viewing.viewed_on] = item
         return days
+
+    @cachemodel.cached_method(auto_publish=False)
+    def popular_movies(self):
+        from welovemovies.models import Viewing
+        index = {}
+        for v in self.watched_movies():
+            index[v.movie] = index.get(v.movie, 0)+1
+        sorted_items = sorted(index.items(), lambda x,y: cmp(y[1], x[1]))
+        filtered_items = filter(lambda m: m[1] > 1, sorted_items)
+        if len(filtered_items) < 1:
+            # if no movies have been watched more than one person, just show movies that were loved
+            filtered_items = map(lambda v: (v.movie, 1), filter(lambda v: v.rating == Viewing.RATING_LOVE, self.watched_movies()))
+        return filtered_items
+
+
