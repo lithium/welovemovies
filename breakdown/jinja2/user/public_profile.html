@@ -142,7 +142,7 @@
 <script>
     var cal = new CalHeatMap();
     cal.init({
-        data: '/v1/user/graph',
+        data: '/v1/user/{{user.username}}/graph',
         itemSelector: '#graph-container',
         itemName: ['movie', 'movies'],
         start: new Date(2016,1,1),

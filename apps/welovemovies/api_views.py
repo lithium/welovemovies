@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from mainsite.models import CachedSite
 from welovemovies.helpers import ImdbHelper
 from welovemovies.serializers import ImdbResultsSerializer, ViewingGraphSerializer
+from wlmuser.models import WlmUser
 
 
 class ImdbSearch(APIView):
@@ -25,15 +26,22 @@ class ImdbSearch(APIView):
 
 
 class UserViewingGraph(APIView):
-    def get(self, request):
-        """
-        """
-        stats = request.user.viewing_graph(request)
+    permission_classes = []
+
+    def get(self, request, username):
+        try:
+            user = WlmUser.cached.get(username=username)
+        except WlmUser.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        stats = user.viewing_graph(request)
         serializer = ViewingGraphSerializer(stats, context={'request': request})
         return Response(serializer.data)
 
 
 class SiteViewingGraph(APIView):
+    permission_classes = []
+
     def get(self, request):
         cached_site = CachedSite.objects.get_current(request)
         stats = cached_site.viewing_graph()

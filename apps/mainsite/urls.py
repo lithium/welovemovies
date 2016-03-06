@@ -35,7 +35,7 @@ urlpatterns = [
 
     # rest api
     # url(r'^v1/search$', ImdbSearch.as_view(), name='api_imdb_search'),
-    url(r'^v1/user/graph$', UserViewingGraph.as_view(), name='api_user_viewings'),
+    url(r'^v1/user/(?P<username>[^/]+)/graph$', UserViewingGraph.as_view(), name='api_user_viewings'),
     url(r'^v1/graph$', SiteViewingGraph.as_view(), name='api_user_viewings'),
 
     # viewings
