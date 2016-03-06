@@ -62,7 +62,11 @@ class MovieDetail(DetailView):
 
 class ScheduleViewing(LoginRequiredMixin, MovieDetail, FormView):
     form_class = ScheduleViewingForm
-    http_method_names = ['post']
+    http_method_names = ['post', 'get']
+
+    def get(self, request, *args, **kwargs):
+        self.get_viewing()
+        return HttpResponseRedirect(reverse('movie_detail', kwargs={'movieID': self.kwargs.get('movieID')}))
 
     def get_viewing(self):
         movie = self.get_object()

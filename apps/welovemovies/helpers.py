@@ -10,7 +10,7 @@ class ImdbHelper(object):
     def __init__(self, **kwargs):
         self.imdb = imdb.IMDb(**kwargs)
 
-    def search_movie(self, query, max_results=10, full_detail=True):
+    def search_movie(self, query, max_results=8, full_detail=True):
         results = self.imdb.search_movie(query, results=max_results)
         filtered_results = filter(lambda r: r.get('kind') == 'movie', results)
         if full_detail:
