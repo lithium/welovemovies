@@ -40,3 +40,16 @@ class PublicProfile(DetailView):
             'challenge': user.active_challenge(self.request),
         })
         return context
+
+
+class PublicMovieList(PublicProfile):
+    template_name = 'user/public_movies.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicMovieList, self).get_context_data(**kwargs)
+        user = self.get_object()
+        context.update({
+            'movies': reversed(user.watched_movies()),
+            'movie_count': user.watched_count,
+        })
+        return context

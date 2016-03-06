@@ -1,0 +1,38 @@
+{%extends "base.html"%}
+
+{%block content%}
+<div class="container">
+    <h1>{{user}} Loves Movies</h1>
+</div>
+
+<div class="container movie-list">
+
+    <table class="table table-hover ">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Movie</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+        {%for viewing in movies%}
+        <tr>
+            <th scope="row">
+                #{{movie_count - loop.index0}}
+            </th>
+            <td>
+                <div class="pull-xs-left cover">
+                    <img class="img-rounded" height="64" src="{{viewing.movie.cached_cover_url}}"/>
+                </div>
+                <h5>{{viewing.movie.title}} ({{viewing.movie.year}})</h5>
+                <p>{{viewing.summary}}</p>
+            </td>
+            <td class="rating-column">{{viewing.get_rating_display()}}</td>
+        </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+
+</div>
+{%endblock%}

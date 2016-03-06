@@ -91,7 +91,9 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-5">
-            <h2>Recently Watched</h2>
+            <h2>Recently Watched
+                <a href="{{reverse('public_profile_movies', kwargs={'username': user.username})}}">All</a>
+            </h2>
             {% for viewing in user.recently_watched %}
             <div class="row viewing">
                 <div class="col-xs-2 cover">

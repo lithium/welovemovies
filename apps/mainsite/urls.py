@@ -11,7 +11,7 @@ from mainsite.views import HomePageView, error404, error500
 from welovemovies.api_views import SiteViewingGraph, UserViewingGraph
 from welovemovies.views import SearchResults, MovieDetail, ScheduleViewing, ViewingList, RecordViewing, MySchedule, \
     CachedCoverImage, RemoveViewing
-from wlmuser.views import ProfileView, PublicProfile
+from wlmuser.views import ProfileView, PublicProfile, PublicMovieList
 
 handler404 = 'mainsite.views.error404'
 handler500 = 'mainsite.views.error500'
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/$', ProfileView.as_view(), name='account_profile'),
     url(r'^profile/(?P<username>[^/]+)$', PublicProfile.as_view(), name='public_profile'),
+    url(r'^profile/(?P<username>[^/]+)/movies$', PublicMovieList.as_view(), name='public_profile_movies'),
 
     # search results
     url(r'^search$', SearchResults.as_view(), name='search_results'),
