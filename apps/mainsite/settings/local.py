@@ -20,8 +20,10 @@ SECRET_KEY = '{{secret_key}}'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(TOP_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': os.path.join(TOP_DIR, 'db.sqlite3'),
+        'NAME': 'welovemovies',
+        'host': '127.0.0.1'
     }
 }
 
