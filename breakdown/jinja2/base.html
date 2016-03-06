@@ -41,8 +41,9 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ reverse('public_profile', kwargs={'username': request.user.username}) }}"><i class="fa fa-user fa-fw"></i> Profile</a>
-                            <a class="dropdown-item" href="{{ reverse('account_profile') }}"><i class="fa fa-cog fa-fw"></i> Settings</a>
+                            <a class="dropdown-item" href="{{ reverse('public_profile_movies', kwargs={'username': request.user.username}) }}"><i class="fa fa-film fa-fw"></i> Movie List</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ reverse('account_profile') }}"><i class="fa fa-cog fa-fw"></i> Settings</a>
                             <a class="dropdown-item" href="{{ reverse('account_logout') }}"><i class="fa fa-power-off fa-fw"></i> Logout</a>
                         </div>
                     </div>

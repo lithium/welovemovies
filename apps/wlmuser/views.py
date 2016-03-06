@@ -48,8 +48,9 @@ class PublicMovieList(PublicProfile):
     def get_context_data(self, **kwargs):
         context = super(PublicMovieList, self).get_context_data(**kwargs)
         user = self.get_object()
+        movies = sorted(user.watched_movies(), lambda a,b: cmp(b.viewed_on, a.viewed_on))
         context.update({
-            'movies': reversed(user.watched_movies()),
+            'movies': movies,
             'movie_count': user.watched_count,
         })
         return context
