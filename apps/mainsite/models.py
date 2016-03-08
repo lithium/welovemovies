@@ -142,7 +142,7 @@ class CachedSite(StatsMixin, cachemodel.CacheModel, Site):
             days[viewing.viewed_on] = item
         return days
 
-    @cachemodel.cached_method(auto_publish=False)
+    @cachemodel.cached_method(auto_publish=True)
     def popular_movies(self):
         index = {}
         for v in self.watched_movies():
