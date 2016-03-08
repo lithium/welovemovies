@@ -8,7 +8,11 @@
 
 <div class="container">
 
-    <form method="POST">
+
+
+    <div class="row">
+        <div class="col-sm-8">
+                <form method="POST">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" />
         <div class="row ">
             <div class="col-xs-3">
@@ -46,32 +50,33 @@
         </div>
     </form>
 
-    <hr>
+        </div>
 
-    <div class="row card-stats">
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{schedule.total_per_week}}</h1>
-                <h6 class="text-muted">Scheduled per week</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{"{:0.0f}".format(schedule.avg_per_day * challenge.days_left)}}</h1>
-                <h6 class="text-muted">Scheduled total</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>{{"{:+0.0f}".format(schedule.avg_per_day * challenge.days_left - challenge.how_many_movies)}}</h1>
-                <h6 class="text-muted">Challenge goal</h6>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card card-block">
-                <h1>~{{"{:0.1f}".format(schedule.avg_per_day)}}</h1>
-                <h6 class="text-muted">Scheduled per day</h6>
-            </div>
+        <div class="col-sm-4">
+            <table class="table equation">
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td class="numeral">{{request.user.watched_count}}</td>
+                    <td>watched movies</td>
+                </tr>
+                <tr>
+                    <td class="operator">&plus;</td>
+                    <td class="numeral">{{schedule.total_per_week}}</td>
+                    <td>scheduled per week</td>
+                </tr>
+                <tr>
+                    <td class="operator">&times;</td>
+                    <td class="numeral">{{"{:0.0f}".format(challenge.days_left/7) }}</td>
+                    <td>remaining weeks</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="numeral">{{"{:0.0f}".format(request.user.watched_count + (schedule.avg_per_day * challenge.days_left))}}</td>
+                    <td>total movies <span class="numeral">({{"{:+0.0f}".format(request.user.watched_count + (schedule.avg_per_day * challenge.days_left - challenge.how_many_movies))}})</span></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
