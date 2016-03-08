@@ -24,14 +24,16 @@
                 #{{movie_count - loop.index0}}
             </th>
             <td class="avatar">
+                <a href="{{reverse('public_profile', kwargs={'username': viewing.viewer.username})}}">
                 <img class="img-circle" width="32" src="{{viewing.viewer.avatar_url}}">
                 <p>{{viewing.viewer}}</p>
+                </a>
             </td>
             <td>
                 <div class="pull-xs-left cover">
                     <img class="img-rounded" height="64" src="{{viewing.movie.cached_cover_url}}"/>
                 </div>
-                <h5>{{viewing.movie.title}} ({{viewing.movie.year}})</h5>
+                <h5><a href="{{reverse('movie_detail', kwargs={'movieID':viewing.movie.imdb_id})}}">{{viewing.movie.title}} ({{viewing.movie.year}})</a></h5>
                 <p>{{viewing.summary}}</p>
             </td>
             <td class="hidden-xs-down rating-column">{{viewing.get_rating_display()}}</td>
