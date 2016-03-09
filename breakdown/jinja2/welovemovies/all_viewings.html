@@ -34,7 +34,7 @@
             </td>
             <td>
                 <div class="pull-xs-left cover">
-                    <img class="img-rounded" height="64" src="{{viewing.movie.cached_cover_url}}"/>
+                    <img class="img-rounded" src="{{viewing.movie.cached_cover_url}}"/>
                 </div>
                 <h5><a href="{{reverse('movie_detail', kwargs={'movieID':viewing.movie.imdb_id})}}">{{viewing.movie.title}} ({{viewing.movie.year}})</a></h5>
                 <p>{{viewing.summary}}</p>
