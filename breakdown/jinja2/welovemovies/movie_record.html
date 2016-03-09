@@ -1,5 +1,7 @@
 {%extends "base.html"%}
 
+{% set active_tab = "movies" %}
+{% block title %}Record Viewing - {{viewing.movie.title}}{%if viewing.movie.year%} ({{viewing.movie.year}}){%endif%} - We Love Movies{% endblock %}
 
 {%block content%}
 <div class="container movie-detail-container record-viewing">

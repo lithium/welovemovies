@@ -2,6 +2,7 @@
 
 
 {% set active_tab = "movies" %}
+{% block title %}{{movie.title}}{%if movie.year%} ({{movie.year}}){%endif%} - We Love Movies{% endblock %}
 
 {%block content%}
 <div class="container movie-detail-container">
