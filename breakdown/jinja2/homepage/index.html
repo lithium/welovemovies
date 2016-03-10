@@ -44,7 +44,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
-                    <h2>Recently Watched <a href="{{reverse('all_viewings')}}">All</a></h2>
+                    <h2>Recently Watched <a class="btn btn-sm btn-secondary" href="{{reverse('all_viewings')}}">All movies</a></h2>
                     {% for viewing in cached_site.recently_watched[:3] %}
                     {% call watched_row(viewing.movie) %}
                     <h5><a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a>

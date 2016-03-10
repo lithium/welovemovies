@@ -48,7 +48,7 @@
         <div class="row">
             <div class="col-sm-6">
                 <h2>Recently Watched
-                    <a href="{{reverse('public_profile_movies', kwargs={'username': user.username})}}">All</a>
+                    <a class="btn btn-sm btn-secondary" href="{{reverse('public_profile_movies', kwargs={'username': user.username})}}">All movies</a>
                 </h2>
                 {% for viewing in user.recently_watched[:3] %}
                     {{viewing_row(viewing)}}
