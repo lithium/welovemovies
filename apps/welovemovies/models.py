@@ -1,6 +1,7 @@
 from hashlib import md5
 
 import cachemodel
+import re
 from django.conf import settings
 from django.core.files.storage import DefaultStorage
 from django.core.urlresolvers import reverse
@@ -203,6 +204,85 @@ class MovieMetadata(DefaultModel):
         self.publish_by('movie', 'key', 'source', 'value')
 
 
+_hashtags_strip = [
+    re.compile(r'#dlmchallenge', re.IGNORECASE),
+    re.compile(r'#366movies ?in ?#?366days', re.IGNORECASE),
+    re.compile(r'#366movies', re.IGNORECASE),
+    re.compile(r'#366days', re.IGNORECASE),
+    re.compile(r'https?://[^ ]+', re.IGNORECASE),
+]
+_title_res = [
+    re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.]\s*(?P<title>[^-:;.(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
+]
+
+
+def _search_for_title(message):
+    msg = message
+    for ht in _hashtags_strip:
+        msg = ht.sub('', msg)
+
+    for r in _title_res:
+        match = r.search(msg)
+        if match:
+            d = match.groupdict()
+            d['title'] = d['title'].replace('"','').strip()
+            d['summary'] = d['summary'].strip()
+            return d
+
+
+def _lookup_movie(match):
+    try:
+        kwargs = {
+            'title': match.get('title')
+        }
+        if match.get('year'):
+            kwargs['year'] = match.get('year')
+        movie = Movie.cached.get(**kwargs)
+        return movie
+    except Movie.DoesNotExist:
+        pass
+
+
+class ViewingManager(models.Manager):
+    def get_or_create_from_tweet(self, tweet):
+        created = False
+        match = _search_for_title(tweet.text)
+        if match:
+            print(u"\nmatch: {}\n  {}".format(tweet.text, match))
+            m = _lookup_movie(match)
+            if m:
+                print(u"existing movie: {} ".format(m))
+                return m, created
+
+            imdb = ImdbHelper()
+            results = imdb.search_movie(match.get('title'))
+            def _match_result(r):
+                title_matches = match.get('title').lower() == r.get('title').lower()
+                if not title_matches:
+                    return False
+                if match.get('year'):
+                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
+                        return False
+                return True
+            match_title = filter(_match_result, results)
+            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
+            if len(match_sorted) > 0:
+                r = match_sorted[0]
+                y = r.get('year')
+                t = r.get('title')
+                imdb_id = r.getID()
+                print "  result y={} t={} id={}".format(y, t, imdb_id)
+                movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
+                if created:
+                    movie.fetch_imdb(max_cast=0)
+            else:
+                print(u"UNABLE TO FIND RESULT")
+        else:
+            print(u"SKIPPED! {}".format(tweet.text))
+
+        return None, created
+
+
 class Viewing(DefaultModel):
     STATUS_UNWATCHED = 'unwatched'
     STATUS_WATCHED = 'watched'
@@ -231,6 +311,8 @@ class Viewing(DefaultModel):
     rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
     how_watched = models.CharField(max_length=254, blank=True, null=True)
+
+    objects = ViewingManager()
 
     class Meta:
         ordering = ('scheduled_for',)

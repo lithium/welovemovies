@@ -1,4 +1,4 @@
-./settings_fragments/
+settings_fragments/
 *.sqlite*
 .*.sw*
 *~

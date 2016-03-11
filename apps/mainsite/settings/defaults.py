@@ -177,3 +177,12 @@ settings_fragment('email')
 ###
 
 settings_fragment('rest_framework')
+
+
+###
+#
+# API Credentials
+#
+###
+
+settings_fragment('credentials')
