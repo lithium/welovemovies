@@ -1,5 +1,7 @@
 import cachemodel
 import pytz
+import twitter
+from allauth.socialaccount.models import SocialApp, SocialToken
 from django.contrib.auth.models import Group, AbstractUser, UserManager
 from django.contrib.sites.models import Site
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -93,6 +95,31 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
             days[viewing.viewed_on] = item
 
         return days
+
+    @property
+    def has_twitter(self):
+        return self.social_account('twitter') is not None
+
+    def tweet(self, message):
+        account = self.social_account('twitter')
+        if not account:
+            return
+
+        try:
+            app = SocialApp.objects.get(provider='twitter')
+        except SocialApp.DoesNotExist:
+            return
+
+        try:
+            token = SocialToken.objects.get(app=app, account=account)
+        except SocialToken.DoesNotExist:
+            return
+
+        api = twitter.Api(consumer_key=app.client_id,
+                          consumer_secret=app.secret,
+                          access_token_key=token.token,
+                          access_token_secret=token.token_secret)
+        return api.PostUpdate(message)
 
 
 
