@@ -26,6 +26,10 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
         super(WlmUser, self).publish()
         self.publish_by('username')
 
+    def delete(self, *args, **kwargs):
+        self.publish_delete('username')
+        return super(WlmUser, self).delete()
+
     def get_absolute_url(self):
         return reverse('public_profile', kwargs={'username': self.username})
 

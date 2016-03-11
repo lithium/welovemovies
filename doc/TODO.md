@@ -9,8 +9,11 @@ Bug Fixes
   x visible runtimes
   x fixup timezones to display in users local timezone
   x record viewing should be its own page
-  - page titles
-  - removing user needs to publish cache
+  x page titles
+  x removing user needs to publish cache
+  - default time timezones
+  - dates are off-by-one in calheatmap
+
 
 
 

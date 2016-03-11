@@ -249,6 +249,23 @@ class Viewing(DefaultModel):
         site.publish_method('favorite_genres')
         site.publish_method('favorite_decades')
 
+    def delete(self, *args, **kwargs):
+        self.publish_delete('movie','viewer')
+        movie = self.movie
+        viewer = self.viewer
+        site = CachedSite.objects.get_current()
+        ret = super(Viewing, self).delete(*args, **kwargs)
+        movie.publish()
+        viewer.publish()
+        viewer.publish_method('favorite_directors')
+        viewer.publish_method('favorite_genres')
+        viewer.publish_method('favorite_decades')
+        site.publish()
+        site.publish_method('favorite_directors')
+        site.publish_method('favorite_genres')
+        site.publish_method('favorite_decades')
+        return ret
+
 
 class ViewingCast(DefaultModel):
     viewing = models.ForeignKey('welovemovies.Viewing')

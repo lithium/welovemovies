@@ -42,6 +42,11 @@ class WlmUserAdmin(admin.ModelAdmin):
         ViewingInline
     ]
 
+    def delete_model(self, request, obj):
+        for viewing in obj.viewing_set.all():
+            viewing.delete()
+        obj.delete()
+
 admin.site.register(WlmUser, WlmUserAdmin)
 
 admin.site.unregister(Group)
