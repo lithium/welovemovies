@@ -123,6 +123,7 @@
         {%elif viewing.status == 'watched' or viewing.status == 'rewatched'%}
         <div class="row">
             <div class="col-xs-2">
+                <a name="review-{{viewing.pk}}"></a>
                 <img class="img-circle pull-xs-right" width="32" src="{{viewing.viewer.avatar_url}}"/>
             </div>
             <div class="col-xs-10">

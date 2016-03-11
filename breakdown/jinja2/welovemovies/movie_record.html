@@ -63,11 +63,11 @@
                  <fieldset class="form-group form-inline">
                      <label class="form-control-label" for="id_how_watched">How did you watch it</label>
                      <input type="text" class="form-control" id="id_how_watched" name="how_watched" placeholder="Theater, Netflix, DVD" value="{{form.how_watched.value() if form.how_watched.value() else ''}}">
+                     <label class="form-control-label" for="id_seen_before">I'd seen it before</label>
+                     <input type="checkbox" class="form-control" id="id_seen_before" {%if form.seen_before.value()%}checked="checked"{%endif%} name="seen_before">
                  </fieldset>
 
                  <fieldset class="form-group form-inline">
-                     <label class="form-control-label" for="id_seen_before">I'd seen it before</label>
-                     <input type="checkbox" class="form-control" id="id_seen_before" {%if form.seen_before.value()%}checked="checked"{%endif%} name="seen_before">
                  </fieldset>
 
                  <fieldset class="form-group form-inline">
@@ -93,6 +93,24 @@
                  <fieldset class="form-group">
                      <textarea class="form-control" id="id_summary" name="summary" required placeholder="Provide your short review of the movie">{{form.summary.value() if form.summary.value() else ''}}</textarea>
                  </fieldset>
+
+                 {%if request.user.has_twitter%}
+                 <fieldset class="form-group form-inline">
+                     <label class="form-control-label" for="id_send_tweet">Tweet movie</label>
+                     <input type="checkbox" class="form-control" id="id_send_tweet" checked="checked" name="send_tweet">
+                 </fieldset>
+
+                 <div class="tweet-preview" id="tweet-preview-container">
+                     <img class="img-circle pull-xs-left" src="{{request.user.avatar_url}}">
+
+                     <blockquote class="blockquote">
+                         <span id="tweet-prefix">{{request.user.tweet_prefix(viewing)}}</span>
+                         <span id="tweet-summary"></span>
+                         <span id="tweet-hashtags">{{request.user.twitter_hashtags}}</span>
+                     </blockquote>
+                 </div>
+                 {%endif%}
+
                  <button type="submit" class="btn btn-primary">Save</button>
              </form>
          </div>
@@ -108,6 +126,33 @@ document.addEventListener("DOMContentLoaded", function() {
         field: document.getElementById('id_viewed_on'),
         format: 'MMM D, YYYY',
     });
+
+    {%if request.user.has_twitter%}
+    var prefix = $('#tweet-prefix').text()
+    var suffix = $('#tweet-hashtags').text()
+    var available = 138 - (prefix.length + suffix.length)
+
+    var updatePreview = function() {
+        var txt = $('#id_summary').val().replace('\n','');
+        if (txt.length > available) {
+            txt = txt.substring(0, available-24)+"\u2026 http://t.co/"
+        }
+        $('#tweet-summary').text(txt)
+    };
+    updatePreview();
+    $('#id_summary').keyup(updatePreview);
+    $('#id_summary').change(updatePreview);
+
+    var togglePreview = function() {
+        if ($('#id_send_tweet').is(':checked')) {
+            $('#tweet-preview-container').show();
+        } else {
+            $('#tweet-preview-container').hide();
+        }
+    };
+    togglePreview();
+    $('#id_send_tweet').click(togglePreview);
+    {%endif%}
 });
 </script>
 {%endblock%}

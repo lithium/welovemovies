@@ -128,9 +128,12 @@ class RecordViewing(UpdateView):
     def form_valid(self, form):
         viewing = form.save(commit=False)
         seen_before = form.cleaned_data.get('seen_before')
+        send_tweet = form.cleaned_data.get('send_tweet')
         viewing.status = Viewing.STATUS_REWATCHED if seen_before else Viewing.STATUS_WATCHED
         if not viewing.viewed_on:
             viewing.viewed_on = timezone.now()
+        if send_tweet:
+            self.request.user.tweet_viewing(viewing)
         viewing.save()
         return HttpResponseRedirect(self.get_success_url())
 

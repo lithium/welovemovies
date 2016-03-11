@@ -12,6 +12,7 @@ class RecordViewingForm(forms.ModelForm):
     viewed_on = forms.DateField(input_formats=['%b %d, %Y'], required=False)
     summary = forms.CharField(widget=forms.Textarea)
     seen_before = forms.BooleanField(required=False)
+    send_tweet = forms.BooleanField(required=False)
 
     class Meta:
         model = Viewing

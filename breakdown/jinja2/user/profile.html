@@ -56,6 +56,15 @@
                 <img class="img-circle" src="{{ request.user.avatar_url }}" width="48">
             </div>
         </fieldset>
+        <fieldset class="form-group row">
+            <label for="id_twitter_prefix" class="col-xs-3 form-control-label">Tweet Format</label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" id="id_twitter_prefix" name="twitter_prefix" value="{{form.twitter_prefix.value()}}" placeholder="E-mail address">
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" id="id_twitter_hashtags" name="twitter_hashtags" value="{{form.twitter_hashtags.value()}}" placeholder="E-mail address">
+            </div>
+        </fieldset>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </div>

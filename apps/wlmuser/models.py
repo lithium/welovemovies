@@ -1,3 +1,4 @@
+# coding=utf-8
 import cachemodel
 import pytz
 import twitter
@@ -17,8 +18,11 @@ TZ_CHOICES = [(str(t), str(t)) for t in pytz.all_timezones]
 
 
 class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
+    DEFAULT_TWITTER_PREFIX = u'#{number} {title} ({year}):'
     objects = UserManager()
     timezone = models.CharField(max_length=254, default='US/Pacific', choices=TZ_CHOICES)
+    twitter_hashtags = models.CharField(max_length=254, default='#DLMChallenge')
+    twitter_prefix = models.CharField(max_length=254, default=DEFAULT_TWITTER_PREFIX)
 
     class Meta:
         verbose_name = 'User'
@@ -120,6 +124,37 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
                           access_token_key=token.token,
                           access_token_secret=token.token_secret)
         return api.PostUpdate(message)
+
+    def tweet_prefix(self, viewing, number=None):
+        if number is None:
+            number = self.watched_count+1
+        kwargs = dict(number=number, title=viewing.movie.title, year=viewing.movie.year)
+        try:
+            return self.twitter_prefix.format(**kwargs)
+        except Exception as e:
+            return WlmUser.DEFAULT_TWITTER_PREFIX.format(**kwargs)
+
+    def tweet_viewing(self, viewing):
+        prefix = self.tweet_prefix(viewing)
+        available = 138 - (len(prefix) + len(self.twitter_hashtags))
+        summary_length = len(viewing.summary)
+        if summary_length > available:
+            shortened_length = 25
+            short_summary = viewing.summary[:available - shortened_length]
+            site = Site.objects.get_current()
+            url = '{domain}{url}#review-{viewing}'.format(domain=site.domain,
+                                                          url=reverse('movie_detail', kwargs={'movieID':viewing.movie.imdb_id}),
+                                                          viewing=viewing.pk)
+            summary = u'{summary}… {url}'.format(summary=short_summary, url=url)
+        else:
+            summary = viewing.summary
+
+        tweet = u'{prefix} {summary} {hashtags}'.format(prefix=prefix, summary=summary, hashtags=self.twitter_hashtags)
+        self.tweet(tweet)
+
+
+
+
 
 
 
