@@ -70,6 +70,7 @@
         <div class="row card-stats">
 
             <div class="col-sm-4">
+                {%if user.favorite_director%}
                 <div class="card">
                     <div class="card-block">
                         <h1>{{user.favorite_director[0]}}</h1>
@@ -81,9 +82,11 @@
                         {% endfor %}
                     </ul>
                 </div>
+                {%endif%}
             </div>
 
             <div class="col-sm-4">
+                {%if user.favorite_genre%}
                 <div class="card">
                     <div class="card-block">
                         <h1>{{user.favorite_genre[0]}}</h1>
@@ -95,9 +98,11 @@
                         {% endfor %}
                     </ul>
                 </div>
+                {%endif%}
             </div>
 
             <div class="col-sm-4">
+                {%if user.favorite_decade%}
                 <div class="card">
                     <div class="card-block">
                         <h1>{{user.favorite_decade[0]}}s</h1>
@@ -109,6 +114,7 @@
                         {% endfor %}
                     </ul>
                 </div>
+                {%endif%}
             </div>
 
         </div>

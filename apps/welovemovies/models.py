@@ -17,10 +17,8 @@ class MovieManager(models.Manager):
     def get_or_create_from_tweet(self, tweet):
         match = _search_for_title(tweet.text)
         if match:
-            print(u"\nmatch: {}\n  {}".format(tweet.text, match))
             m = _lookup_movie(match)
             if m:
-                print(u"existing movie: {} ".format(m))
                 return m, False
 
             imdb = ImdbHelper()
@@ -43,7 +41,6 @@ class MovieManager(models.Manager):
                 y = r.get('year')
                 t = r.get('title')
                 imdb_id = r.getID()
-                print "  result y={} t={} id={}".format(y, t, imdb_id)
                 movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
                 if created:
                     movie.fetch_imdb(max_cast=0)
@@ -117,7 +114,10 @@ class Movie(DefaultModel):
                     meta.save()
 
             for genre in imdb_movie.get('genres', []):
-                meta, created = MovieMetadata.cached.get_or_create(movie=self, key='genre', source='imdb', value=genre)
+                try:
+                    meta, created = MovieMetadata.cached.get_or_create(movie=self, key='genre', source='imdb', value=genre)
+                except UnicodeEncodeError:
+                    pass
 
             i = 1
             for cast in imdb_movie.get('cast', []):
@@ -253,7 +253,7 @@ _hashtags_strip = [
     re.compile(r'https?://[^ ]+', re.IGNORECASE),
 ]
 _title_res = [
-    re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.]\s*(?P<title>[^-:;.(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
+    re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.,]\s*(?P<title>[^-:;.,(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
 ]
 
 
@@ -301,7 +301,6 @@ class ViewingManager(models.Manager):
                 viewing.summary = tweet.text
                 viewing.viewed_on = tweet.created_at
                 viewing.save()
-                print("Viewing saved: {}".format(viewing))
             return viewing, created
         return None, False
 
