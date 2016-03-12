@@ -1,18 +1,9 @@
-import logging
-
 import tweepy
-from allauth.socialaccount.models import SocialApp
-from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
 
-from welovemovies.models import Viewing
+from welovemovies.management.tweepycommand import TweepyCommand
 
 
-miss_logger = logging.getLogger('welovemovies.searchtweets.misses')
-hit_logger = logging.getLogger('welovemovies.searchtweets.hits')
-
-
-class Command(BaseCommand):
+class Command(TweepyCommand):
     help = 'Search for past tweet viewings'
 
     def add_arguments(self, parser):
@@ -20,21 +11,7 @@ class Command(BaseCommand):
         parser.add_argument('--query', action='store', dest='query', default='#dlmchallenge', help='the search query')
         parser.add_argument('--last', action='store', dest='last', default=-1, help='max_id to pass to twitter search')
 
-    def handle(self, *args, **options):
-        try:
-            app = SocialApp.objects.get(provider='twitter')
-        except SocialApp.DoesNotExist:
-            raise CommandError("No twitter social app")
-
-        token_key = getattr(settings, 'MANAGEMENT_TWITTER_TOKEN_KEY', None)
-        token_secret = getattr(settings, 'MANAGEMENT_TWITTER_TOKEN_SECRET', None)
-        if not (token_key and token_secret):
-            raise CommandError("No MANAGEMENT_TWITTER_TOKEN in settings")
-
-        auth = tweepy.OAuthHandler(app.client_id, app.secret)
-        auth.set_access_token(token_key, token_secret)
-        api = tweepy.API(auth)
-
+    def handle_tweepy(self, *args, **options):
         query = options.get('query')
 
         try:
@@ -47,7 +24,9 @@ class Command(BaseCommand):
         except ValueError:
             last_id = -1
 
-        if options.get('verbosity') > 0:
+        self.api = tweepy.API(self.oauth_handler)
+
+        if self.verbosity:
             self.stdout.write(u"Searching for {count} tweets matching '{query}' last_id={last}".format(**options))
 
         tweet_count = 0
@@ -64,19 +43,6 @@ class Command(BaseCommand):
             except tweepy.TweepError as e:
                 break
 
-        if options.get('verbosity') > 0:
+        if self.verbosity:
             self.stdout.write(u"DONE.  last_id={}".format(last_id))
-
-    def process_tweet(self, tweet, verbosity=1):
-        viewing, created = Viewing.objects.get_or_create_from_tweet(tweet)
-        if not viewing:
-            msg = u"Unable to parse tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text)
-            miss_logger.error(msg)
-            if verbosity > 1:
-                self.stdout.write(msg)
-        if viewing and created:
-            msg = u"Imported tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text)
-            hit_logger.error(msg)
-            if verbosity > 1:
-                self.stdout.write(msg)
 
