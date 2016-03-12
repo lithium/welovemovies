@@ -11,6 +11,7 @@ class ViewingInline(admin.TabularInline):
     fields = ('movie', 'status', 'viewed_on')
     extra = 0
     fk_name = 'viewer'
+    raw_id_fields = ('movie',)
 
 
 class WlmUserAdmin(admin.ModelAdmin):
@@ -51,3 +52,5 @@ admin.site.register(WlmUser, WlmUserAdmin)
 
 admin.site.unregister(Group)
 admin.site.register(ProxyGroup)
+
+

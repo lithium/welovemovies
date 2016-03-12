@@ -94,7 +94,7 @@
 {%else%}
     <div class="row">
         <p>Watched on {{viewing.viewed_on.strftime("%b %d, %Y")}}.<br>
-        {{viewing.get_rating_display()}}.
+        {{viewing.visible_rating}}.
         </p>
     </div>
 {%endif%}
@@ -132,7 +132,7 @@
                 {%else%}<a href="{{viewing.viewer.get_absolute_url()}}">{{viewing.viewer}}</a>
                 {%endif%}
                 {%if viewing.status == 'rewatched'%}re-{%endif%}watched this{%if viewing.viewed_on%} on {{viewing.viewed_on.strftime("%b %d, %Y")}}{%endif%}{%if viewing.how_watched%} <span class="how-watched">{{viewing.how_watched}}</span>{%endif%}.<br>
-                {{ viewing.get_rating_display() }}.
+                {{ viewing.visible_rating }}.
             </div>
         </div>
         <div class="row">

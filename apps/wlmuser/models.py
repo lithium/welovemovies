@@ -23,6 +23,7 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
     timezone = models.CharField(max_length=254, default='US/Pacific', choices=TZ_CHOICES)
     twitter_hashtags = models.CharField(max_length=254, default='#DLMChallenge')
     twitter_prefix = models.CharField(max_length=254, default=DEFAULT_TWITTER_PREFIX)
+    twitter_profile_image_url = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
         verbose_name = 'User'
@@ -74,6 +75,8 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
         account = self.social_account('twitter')
         if account and 'profile_image_url' in account.extra_data:
             return account.extra_data.get('profile_image_url')
+        if self.twitter_profile_image_url:
+            return self.twitter_profile_image_url
         return staticfiles_storage.url("images/avatar-placeholder.png")
 
     @property

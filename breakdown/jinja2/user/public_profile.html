@@ -183,7 +183,7 @@
                             <span class="movie-genres">{{", ".join(viewing.movie.genres)}}</span>
                             {%endif%}
                         </h6>
-                        <h5>{{viewing.get_rating_display()}} on {{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
+                        <h5>{%if viewing.visible_rating%}{{viewing.visible_rating}} on {%endif%}{{viewing.viewed_on.strftime("%b %d, %Y")}}<span class="movie-date display-none">{{viewing.viewed_on}}</span>
                             {%if viewing.how_watched%}<span class="how-watched">{{viewing.how_watched}}</span>{%endif%}
                         </h5>
                     </div>

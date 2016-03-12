@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django_object_actions import DjangoObjectActions
 
-from welovemovies.models import Movie, MovieMetadata, MovieCast, Person
+from welovemovies.models import Movie, MovieMetadata, MovieCast, Person, Viewing
 
 
 class MovieAdminForm(forms.ModelForm):
@@ -81,3 +81,23 @@ class PersonAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Person, PersonAdmin)
+
+
+class ViewingAdmin(admin.ModelAdmin):
+    list_display = ('movie', 'viewer', 'status', 'viewed_on')
+    list_filter = ('status', 'viewed_on',)
+    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
+    fieldsets = (
+        ("Metadata", {
+            'fields': ('is_active', 'created_at', 'created_by', 'updated_at', 'updated_by'),
+            'classes': ('collapse',)
+        }),
+        (None, {
+            'fields': ('viewer', 'movie', 'status', 'scheduled_for'),
+        }),
+        ('Viewing', {
+            'fields': ('viewed_on', 'rating', 'how_watched', 'summary'),
+        }),
+    )
+
+admin.site.register(Viewing, ViewingAdmin)

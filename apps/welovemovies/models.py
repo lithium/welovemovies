@@ -2,6 +2,7 @@ from hashlib import md5
 
 import cachemodel
 import re
+
 from django.conf import settings
 from django.core.files.storage import DefaultStorage
 from django.core.urlresolvers import reverse
@@ -10,6 +11,44 @@ from imdb.utils import RolesList
 
 from mainsite.models import DefaultModel, CachedSite
 from welovemovies.helpers import ImdbHelper
+
+
+class MovieManager(models.Manager):
+    def get_or_create_from_tweet(self, tweet):
+        match = _search_for_title(tweet.text)
+        if match:
+            print(u"\nmatch: {}\n  {}".format(tweet.text, match))
+            m = _lookup_movie(match)
+            if m:
+                print(u"existing movie: {} ".format(m))
+                return m, False
+
+            imdb = ImdbHelper()
+            results = imdb.search_movie(match.get('title'))
+
+            def _match_result(r):
+                title_matches = match.get('title').lower() == r.get('title').lower()
+                if not title_matches:
+                    return False
+                if match.get('year'):
+                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
+                        return False
+                return True
+
+            match_title = filter(_match_result, results)
+            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
+
+            if len(match_sorted) > 0:
+                r = match_sorted[0]
+                y = r.get('year')
+                t = r.get('title')
+                imdb_id = r.getID()
+                print "  result y={} t={} id={}".format(y, t, imdb_id)
+                movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
+                if created:
+                    movie.fetch_imdb(max_cast=0)
+                return movie, True
+        return None, False
 
 
 class Movie(DefaultModel):
@@ -30,6 +69,8 @@ class Movie(DefaultModel):
     # rt_id = models.CharField(max_length=254, blank=True, null=True)
     # rt_consensus = models.CharField(max_length=254, blank=True, null=True)
     # rt_tomatoes = models.CharField(max_length=254, blank=True, null=True)
+
+    objects = MovieManager()
 
     def __unicode__(self):
         if self.year:
@@ -245,42 +286,24 @@ def _lookup_movie(match):
 
 class ViewingManager(models.Manager):
     def get_or_create_from_tweet(self, tweet):
-        created = False
-        match = _search_for_title(tweet.text)
-        if match:
-            print(u"\nmatch: {}\n  {}".format(tweet.text, match))
-            m = _lookup_movie(match)
-            if m:
-                print(u"existing movie: {} ".format(m))
-                return m, created
+        movie, movie_created = Movie.objects.get_or_create_from_tweet(tweet)
 
-            imdb = ImdbHelper()
-            results = imdb.search_movie(match.get('title'))
-            def _match_result(r):
-                title_matches = match.get('title').lower() == r.get('title').lower()
-                if not title_matches:
-                    return False
-                if match.get('year'):
-                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
-                        return False
-                return True
-            match_title = filter(_match_result, results)
-            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
-            if len(match_sorted) > 0:
-                r = match_sorted[0]
-                y = r.get('year')
-                t = r.get('title')
-                imdb_id = r.getID()
-                print "  result y={} t={} id={}".format(y, t, imdb_id)
-                movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
-                if created:
-                    movie.fetch_imdb(max_cast=0)
-            else:
-                print(u"UNABLE TO FIND RESULT")
-        else:
-            print(u"SKIPPED! {}".format(tweet.text))
+        if movie:
+            from wlmuser.models import WlmUser
+            user, created = WlmUser.cached.get_or_create(username=tweet.user.screen_name)
+            if created:
+                user.twitter_profile_image_url = tweet.user.profile_image_url
+                user.save()
 
-        return None, created
+            viewing, created = Viewing.objects.get_or_create(movie=movie, viewer=user)
+            if created:
+                viewing.status = Viewing.STATUS_WATCHED
+                viewing.summary = tweet.text
+                viewing.viewed_on = tweet.created_at
+                viewing.save()
+                print("Viewing saved: {}".format(viewing))
+            return viewing, created
+        return None, False
 
 
 class Viewing(DefaultModel):
@@ -347,6 +370,12 @@ class Viewing(DefaultModel):
         site.publish_method('favorite_genres')
         site.publish_method('favorite_decades')
         return ret
+
+    @property
+    def visible_rating(self):
+        if self.rating is None:
+            return ""
+        return self.get_rating_display()
 
 
 class ViewingCast(DefaultModel):

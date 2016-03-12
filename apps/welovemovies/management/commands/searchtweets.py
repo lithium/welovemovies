@@ -44,7 +44,4 @@ class Command(BaseCommand):
             break
 
     def process_tweet(self, tweet):
-        # print u"\n\n{}: {}".format(tweet.user.screen_name, tweet.text)
         viewing, created = Viewing.objects.get_or_create_from_tweet(tweet)
-        # sys.exit()
-        pass

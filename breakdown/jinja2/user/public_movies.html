@@ -32,7 +32,7 @@
                 <h5><a href="{{reverse('movie_detail', kwargs={'movieID':viewing.movie.imdb_id})}}">{{viewing.movie.title}} ({{viewing.movie.year}})</a></h5>
                 <p>{{viewing.summary}}</p>
             </td>
-            <td class="hidden-xs-down rating-column">{{viewing.get_rating_display()}}</td>
+            <td class="hidden-xs-down rating-column">{{viewing.visible_rating}}</td>
             <td class="hidden-sm-down">{{viewing.viewed_on.strftime('%b %-d')}}</td>
         </tr>
         {%endfor%}
