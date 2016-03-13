@@ -17,7 +17,6 @@ class TweetListener(tweepy.StreamListener):
         self.handle_status = handle_status
 
     def on_status(self, status):
-        print(status)
         self.handle_status(status)
         return True
 
