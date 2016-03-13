@@ -1,3 +1,4 @@
+import re
 from hashlib import md5
 
 import imdb
@@ -45,4 +46,53 @@ class ImdbHelper(object):
                 r.raw.decode_content = True
                 store.save(storage_name, r.raw)
                 return storage_name
+
+
+class TweetScraper(object):
+    _hashtags_strip = [
+        re.compile(r'#dlmchallenge', re.IGNORECASE),
+        re.compile(r'#366movies ?in ?#?366days', re.IGNORECASE),
+        re.compile(r'#366movies', re.IGNORECASE),
+        re.compile(r'#366days', re.IGNORECASE),
+        re.compile(r'https?://[^ ]+', re.IGNORECASE),
+    ]
+    _title_res = [
+        re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.,]\s*(?P<title>[^-:;.,(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
+    ]
+
+    @classmethod
+    def search_for_title(cls, message):
+        msg = message
+        for ht in TweetScraper._hashtags_strip:
+            msg = ht.sub('', msg)
+
+        for r in TweetScraper._title_res:
+            match = r.search(msg)
+            if match:
+                d = match.groupdict()
+                d['title'] = d['title'].replace('"','').strip()
+                d['summary'] = d['summary'].strip()
+                return d
+
+
+    @classmethod
+    def imdb_results_for_tweet(cls, tweet):
+        match = TweetScraper.search_for_title(tweet.text)
+        if match:
+            imdb = ImdbHelper()
+            results = imdb.search_movie(match.get('title'))
+
+            def _match_result(r):
+                title_matches = match.get('title').lower() == r.get('title').lower()
+                if not title_matches:
+                    return False
+                if match.get('year'):
+                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
+                        return False
+                return True
+
+            match_title = filter(_match_result, results)
+            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
+            return match_sorted
+
 

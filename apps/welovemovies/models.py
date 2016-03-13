@@ -10,41 +10,43 @@ from django.db import models
 from imdb.utils import RolesList
 
 from mainsite.models import DefaultModel, CachedSite
-from welovemovies.helpers import ImdbHelper
+from welovemovies.helpers import ImdbHelper, TweetScraper
 
 
 class MovieManager(models.Manager):
+
+    def _lookup_movie_from_match(self, match):
+        try:
+            kwargs = {
+                'title': match.get('title')
+            }
+            if match.get('year'):
+                kwargs['year'] = match.get('year')
+            movie = Movie.cached.get(**kwargs)
+            return movie
+        except Movie.DoesNotExist:
+            pass
+
     def get_or_create_from_tweet(self, tweet):
-        match = _search_for_title(tweet.text)
+        if tweet.text.startswith('RT'):
+            return None, False
+
+        match = TweetScraper.search_for_title(tweet.text)
         if match:
-            m = _lookup_movie(match)
-            if m:
-                return m, False
+            movie = self._lookup_movie_from_match(match)
+            if movie:
+                return movie, False
 
-            imdb = ImdbHelper()
-            results = imdb.search_movie(match.get('title'))
+        results = TweetScraper.imdb_results_for_tweet(tweet)
+        if len(results) > 0:
+            r = results[0]
+            y = r.get('year')
+            t = r.get('title')
+            imdb_id = r.getID()
+            movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
+            if created:
+                movie.fetch_imdb(max_cast=0)
 
-            def _match_result(r):
-                title_matches = match.get('title').lower() == r.get('title').lower()
-                if not title_matches:
-                    return False
-                if match.get('year'):
-                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
-                        return False
-                return True
-
-            match_title = filter(_match_result, results)
-            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
-
-            if len(match_sorted) > 0:
-                r = match_sorted[0]
-                y = r.get('year')
-                t = r.get('title')
-                imdb_id = r.getID()
-                movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
-                if created:
-                    movie.fetch_imdb(max_cast=0)
-                return movie, True
         return None, False
 
 
@@ -121,7 +123,7 @@ class Movie(DefaultModel):
 
             i = 1
             for cast in imdb_movie.get('cast', []):
-                if max_cast and i >= max_cast:
+                if max_cast is not None and i >= max_cast:
                     break
                 person, created = Person.cached.get_or_create(imdb_id=cast.getID())
                 person.name = cast.get('name')
@@ -245,46 +247,8 @@ class MovieMetadata(DefaultModel):
         self.publish_by('movie', 'key', 'source', 'value')
 
 
-_hashtags_strip = [
-    re.compile(r'#dlmchallenge', re.IGNORECASE),
-    re.compile(r'#366movies ?in ?#?366days', re.IGNORECASE),
-    re.compile(r'#366movies', re.IGNORECASE),
-    re.compile(r'#366days', re.IGNORECASE),
-    re.compile(r'https?://[^ ]+', re.IGNORECASE),
-]
-_title_res = [
-    re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.,]\s*(?P<title>[^-:;.,(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
-]
-
-
-def _search_for_title(message):
-    msg = message
-    for ht in _hashtags_strip:
-        msg = ht.sub('', msg)
-
-    for r in _title_res:
-        match = r.search(msg)
-        if match:
-            d = match.groupdict()
-            d['title'] = d['title'].replace('"','').strip()
-            d['summary'] = d['summary'].strip()
-            return d
-
-
-def _lookup_movie(match):
-    try:
-        kwargs = {
-            'title': match.get('title')
-        }
-        if match.get('year'):
-            kwargs['year'] = match.get('year')
-        movie = Movie.cached.get(**kwargs)
-        return movie
-    except Movie.DoesNotExist:
-        pass
-
-
 class ViewingManager(models.Manager):
+
     def get_or_create_from_tweet(self, tweet):
         movie, movie_created = Movie.objects.get_or_create_from_tweet(tweet)
 

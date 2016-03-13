@@ -24,7 +24,7 @@ class Command(TweepyCommand):
         except ValueError:
             last_id = -1
 
-        self.api = tweepy.API(self.oauth_handler)
+        api = tweepy.API(self.oauth_handler)
 
         if self.verbosity:
             self.stdout.write(u"Searching for {count} tweets matching '{query}' last_id={last}".format(**options))
@@ -37,7 +37,7 @@ class Command(TweepyCommand):
                 if not new_tweets:
                     break
                 for t in new_tweets:
-                    self.process_tweet(t, options.get('verbosity'))
+                    self.process_tweet(t)
                     tweet_count += 1
                 last_id = new_tweets[-1].id
             except tweepy.TweepError as e:
