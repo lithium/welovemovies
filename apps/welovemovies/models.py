@@ -15,7 +15,7 @@ from welovemovies.helpers import ImdbHelper, TweetScraper
 
 class MovieManager(models.Manager):
 
-    def _lookup_movie_from_match(self, match):
+    def get_from_title_match(self, match):
         try:
             kwargs = {
                 'title': match.get('title')
@@ -33,19 +33,20 @@ class MovieManager(models.Manager):
 
         match = TweetScraper.search_for_title(tweet.text)
         if match:
-            movie = self._lookup_movie_from_match(match)
+            movie = self.get_from_title_match(match)
             if movie:
                 return movie, False
 
-        results = TweetScraper.imdb_results_for_tweet(tweet)
-        if len(results) > 0:
-            r = results[0]
-            y = r.get('year')
-            t = r.get('title')
-            imdb_id = r.getID()
-            movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
-            if created:
-                movie.fetch_imdb(max_cast=0)
+            results = TweetScraper.imdb_results_for_tweet(match)
+            if results is not None and len(results) > 0:
+                r = results[0]
+                y = r.get('year')
+                t = r.get('title')
+                imdb_id = r.getID()
+                movie, created = Movie.cached.get_or_create(imdb_id=imdb_id)
+                if created:
+                    movie.fetch_imdb(max_cast=0)
+                return movie, created
 
         return None, False
 
@@ -264,6 +265,7 @@ class ViewingManager(models.Manager):
                 viewing.status = Viewing.STATUS_WATCHED
                 viewing.summary = tweet.text
                 viewing.viewed_on = tweet.created_at
+                viewing.twitter_status_id = tweet.id
                 viewing.save()
             return viewing, created
         return None, False
@@ -297,6 +299,7 @@ class Viewing(DefaultModel):
     rating = models.CharField(max_length=254, choices=RATING_CHOICES, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
     how_watched = models.CharField(max_length=254, blank=True, null=True)
+    twitter_status_id = models.CharField(max_length=254, blank=True, null=True)
 
     objects = ViewingManager()
 

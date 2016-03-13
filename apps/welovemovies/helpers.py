@@ -8,8 +8,8 @@ from django.core.files.storage import DefaultStorage
 
 
 class ImdbHelper(object):
-    def __init__(self, **kwargs):
-        self.imdb = imdb.IMDb(**kwargs)
+    def __init__(self, *args, **kwargs):
+        self.imdb = imdb.IMDb(*args, **kwargs)
 
     def search_movie(self, query, max_results=8, full_detail=True):
         results = self.imdb.search_movie(query, results=max_results)
@@ -57,42 +57,65 @@ class TweetScraper(object):
         re.compile(r'https?://[^ ]+', re.IGNORECASE),
     ]
     _title_res = [
-        re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.,]\s*(?P<title>[^-:;.,(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
+        re.compile(r'^#dlmchallenge (?P<number>\d+)/366 (?P<title>[^\.]+).', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) on my #dlmchallenge "(?P<title>[^"]+)"', re.IGNORECASE),
+        re.compile(r'^(?P<number>\d+)/366 (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'^movie (?P<number>\d+)[-:] (?P<title>[^\.]+).', re.IGNORECASE),
+        re.compile(r'^film (?P<number>\d+). (?P<title>[^\.]+).', re.IGNORECASE),
+        re.compile(r'^No (?P<number>\d+): (?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'^(?P<number>\d+) - (?P<title>[^-]+) -', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) - (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) - (?P<title>[^-]+) -', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) (?P<title>[^-]+)-', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) (?P<title>[^:]+):', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+) (?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'#(?P<number>\d+):(?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'(?P<title>[^\(]+) \(#(?P<number>\d+)\)', re.IGNORECASE),
+        re.compile(r'(?P<number>\d+)\) (?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'(?P<number>\d+)\. (?P<title>[^-]+)-', re.IGNORECASE),
+        re.compile(r'(?P<number>\d+)\. (?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'^(?P<title>[^\.]+)\..* (?P<number>\d+)/366', re.IGNORECASE),
+
+        #re.compile(r'(#|no\.?)?(?P<number>\d+)[ -:;.,]\s*(?P<title>[^-:;.,(\n]+)[-:;. \n]?\s*(\((?P<year>\d+)\))?(?P<summary>.*)', re.IGNORECASE)
     ]
 
     @classmethod
     def search_for_title(cls, message):
         msg = message
-        for ht in TweetScraper._hashtags_strip:
-            msg = ht.sub('', msg)
+        if msg.startswith('RT'):
+            return
+        # for ht in TweetScraper._hashtags_strip:
+        #     msg = ht.sub('', msg)
 
         for r in TweetScraper._title_res:
             match = r.search(msg)
             if match:
                 d = match.groupdict()
                 d['title'] = d['title'].replace('"','').strip()
-                d['summary'] = d['summary'].strip()
+                # d['summary'] = d['summary'].strip()
                 return d
 
 
     @classmethod
-    def imdb_results_for_tweet(cls, tweet):
-        match = TweetScraper.search_for_title(tweet.text)
-        if match:
-            imdb = ImdbHelper()
-            results = imdb.search_movie(match.get('title'))
+    def imdb_results_for_tweet(cls, match, *imdb_args, **imdb_kwargs):
+        imdb = ImdbHelper(*imdb_args, **imdb_kwargs)
+        results = imdb.search_movie(match.get('title'))
 
-            def _match_result(r):
-                title_matches = match.get('title').lower() == r.get('title').lower()
-                if not title_matches:
+        def _scrub(title):
+            return re.sub(r'[^a-z]', '', title.lower())
+
+        def _match_result(r):
+            title_matches = _scrub(match.get('title')) == _scrub(r.get('title'))
+            if not title_matches:
+                return False
+            if match.get('year'):
+                if not r.get('year') or int(match.get('year')) != int(r.get('year')):
                     return False
-                if match.get('year'):
-                    if not r.get('year') or int(match.get('year')) != int(r.get('year')):
-                        return False
-                return True
+            return True
 
-            match_title = filter(_match_result, results)
-            match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
-            return match_sorted
+        match_title = filter(_match_result, results)
+        match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
+        return match_sorted
 
 

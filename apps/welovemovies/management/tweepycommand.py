@@ -1,10 +1,12 @@
 import logging
+import pprint
 
 import tweepy
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
+from welovemovies.helpers import TweetScraper
 from welovemovies.models import Viewing
 
 
@@ -36,11 +38,16 @@ class TweepyCommand(BaseCommand):
     def handle_tweepy(self, *args, **options):
         raise NotImplementedError("Must implement a handle_tweepy method")
 
-    def process_tweet(self, tweet):
+    def process_tweet(self, tweet, log_misses=True):
+        if self.verbosity > 1:
+            title_match = TweetScraper.search_for_title(tweet.text)
+            self.stdout.write(u"\n{}".format(tweet.text))
+            pprint.pprint(title_match)
         viewing, created = Viewing.objects.get_or_create_from_tweet(tweet)
         if not viewing:
             msg = u"Unable to parse tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text)
-            self.miss_logger.error(msg)
+            if log_misses:
+                self.miss_logger.error(msg)
             if self.verbosity > 1:
                 self.stdout.write(msg)
         if viewing and created:
