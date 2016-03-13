@@ -108,7 +108,6 @@ class StatsMixin(object):
         return sorted_items
 
 
-
 class CachedSiteManager(SiteManager):
     def get_current(self, request=None):
         site = super(CachedSiteManager, self).get_current(request=request)

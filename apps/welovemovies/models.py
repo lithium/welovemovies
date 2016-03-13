@@ -257,6 +257,7 @@ class ViewingManager(models.Manager):
             from wlmuser.models import WlmUser
             user, created = WlmUser.cached.get_or_create(username=tweet.user.screen_name)
             if created:
+                user.twitter_screen_name = tweet.user.screen_name
                 user.twitter_profile_image_url = tweet.user.profile_image_url
                 user.save()
 

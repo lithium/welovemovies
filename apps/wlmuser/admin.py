@@ -26,6 +26,9 @@ class WlmUserAdmin(admin.ModelAdmin):
         ('Access', {
             'fields': ('is_active', 'is_staff', 'is_superuser',)
         }),
+        ('Twitter', {
+            'fields': ('twitter_screen_name', 'twitter_profile_image_url',)
+        }),
         ('Activity', {
             'fields': ('date_joined', 'last_login'),
             'classes': ('collapse',)

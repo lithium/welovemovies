@@ -23,6 +23,9 @@ class WlmUser(StatsMixin, cachemodel.CacheModel, AbstractUser):
     timezone = models.CharField(max_length=254, default='US/Pacific', choices=TZ_CHOICES)
     twitter_hashtags = models.CharField(max_length=254, default='#DLMChallenge')
     twitter_prefix = models.CharField(max_length=254, default=DEFAULT_TWITTER_PREFIX)
+
+    # fields used for unclaimed users created by twitter scraper
+    twitter_screen_name = models.CharField(max_length=254, blank=True, null=True)
     twitter_profile_image_url = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
