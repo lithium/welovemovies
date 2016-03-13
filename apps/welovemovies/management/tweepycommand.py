@@ -45,14 +45,17 @@ class TweepyCommand(BaseCommand):
             pprint.pprint(title_match)
         viewing, created = Viewing.objects.get_or_create_from_tweet(tweet)
         if not viewing:
-            msg = u"Unable to parse tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text)
+            msg = u"Unable to parse tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text.replace("\n","\\n"))
             if log_misses:
                 self.miss_logger.error(msg)
             if self.verbosity > 1:
                 self.stdout.write(msg)
-        if viewing and created:
-            msg = u"Imported tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text)
-            self.hit_logger.error(msg)
-            if self.verbosity > 1:
-                self.stdout.write(msg)
+        else:
+            if created:
+                msg = u"Imported tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text.replace("\n", "\\n"))
+                self.hit_logger.error(msg)
+                if self.verbosity > 1:
+                    self.stdout.write(msg)
+            elif self.verbosity > 1:
+                self.stdout.write("Skipped.")
 

@@ -1,13 +1,10 @@
 import codecs
-import pprint
 import re
 
 import tweepy
-from django.core.management import BaseCommand
 
 from welovemovies.helpers import TweetScraper
 from welovemovies.management.tweepycommand import TweepyCommand
-from welovemovies.models import Movie
 
 
 class Command(TweepyCommand):
@@ -27,11 +24,12 @@ class Command(TweepyCommand):
                         values = line_match.groupdict()
                         msg = values.get('text')
                         title_match = TweetScraper.search_for_title(msg)
-                        if self.verbosity > 1:
-                            self.stdout.write(u"\n{}".format(msg))
-                            pprint.pprint(title_match)
                         if title_match:
                             # movie = Movie.objects.get_from_title_match(title_match)
                             tweet = api.get_status(values.get('id'))
                             self.process_tweet(tweet, log_misses=False)
+                        else:
+                            self.stdout.write(u"\n{}\nno title match.".format(msg))
+                    else:
+                        self.stdout.write(u"no line match?: {}".format(line))
 
