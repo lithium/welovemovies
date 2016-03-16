@@ -56,6 +56,8 @@ class TweepyCommand(BaseCommand):
                 self.hit_logger.error(msg)
                 if self.verbosity > 1:
                     self.stdout.write(msg)
+                return True
             elif self.verbosity > 1:
                 self.stdout.write("Skipped.")
+        return False
 
