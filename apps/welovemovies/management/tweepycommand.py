@@ -1,13 +1,12 @@
+import datetime
 import logging
-import pprint
 
 import tweepy
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from welovemovies.helpers import TweetScraper
-from welovemovies.models import Viewing
+from welovemovies.helpers import MongoHelper
 
 
 class TweepyCommand(BaseCommand):
@@ -38,26 +37,19 @@ class TweepyCommand(BaseCommand):
     def handle_tweepy(self, *args, **options):
         raise NotImplementedError("Must implement a handle_tweepy method")
 
-    def process_tweet(self, tweet, log_misses=True):
-        if self.verbosity > 1:
-            title_match = TweetScraper.search_for_title(tweet.text)
-            self.stdout.write(u"\n{}".format(tweet.text))
-            pprint.pprint(title_match)
-        viewing, created = Viewing.objects.get_or_create_from_tweet(tweet)
-        if not viewing:
-            msg = u"Unable to parse tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text.replace("\n","\\n"))
-            if log_misses:
-                self.miss_logger.error(msg)
-            if self.verbosity > 1:
-                self.stdout.write(msg)
-        else:
-            if created:
-                msg = u"Imported tweet. id=[{}] text=[{}]".format(tweet.id, tweet.text.replace("\n", "\\n"))
-                self.hit_logger.error(msg)
-                if self.verbosity > 1:
-                    self.stdout.write(msg)
-                return True
-            elif self.verbosity > 1:
-                self.stdout.write("Skipped.")
+    def store_tweet(self, tweet):
+        tweet_id = tweet.id
+        mongo = MongoHelper()
+        existing_row = mongo.db.tweets.find_one({'tweet.id': tweet_id})
+        if not existing_row:
+            row = {
+                'inserted_at': datetime.datetime.utcnow(),
+                'processed': False,
+                'imported': False,
+                'tweet': tweet._json,
+            }
+            mongo.db.tweets.insert_one(row)
+            return True
         return False
+
 

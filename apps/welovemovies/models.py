@@ -3,6 +3,9 @@ from hashlib import md5
 import cachemodel
 import re
 
+import datetime
+
+import pytz
 from django.conf import settings
 from django.core.files.storage import DefaultStorage
 from django.core.urlresolvers import reverse
@@ -28,10 +31,10 @@ class MovieManager(models.Manager):
             pass
 
     def get_or_create_from_tweet(self, tweet):
-        if tweet.text.startswith('RT'):
+        if tweet['text'].startswith('RT'):
             return None, False
 
-        match = TweetScraper.search_for_title(tweet.text)
+        match = TweetScraper.search_for_title(tweet['text'])
         if match:
             movie = self.get_from_title_match(match)
             if movie:
@@ -255,18 +258,19 @@ class ViewingManager(models.Manager):
 
         if movie:
             from wlmuser.models import WlmUser
-            user, created = WlmUser.cached.get_or_create(username=tweet.user.screen_name)
+            user, created = WlmUser.cached.get_or_create(username=tweet['user']['screen_name'])
             if created:
-                user.twitter_screen_name = tweet.user.screen_name
-                user.twitter_profile_image_url = tweet.user.profile_image_url
+                user.twitter_screen_name = tweet['user']['screen_name']
+                user.twitter_profile_image_url = tweet['user']['profile_image_url']
                 user.save()
 
             viewing, created = Viewing.objects.get_or_create(movie=movie, viewer=user)
             if created:
                 viewing.status = Viewing.STATUS_WATCHED
-                viewing.summary = tweet.text
-                viewing.viewed_on = tweet.created_at
-                viewing.twitter_status_id = tweet.id
+                viewing.summary = tweet['text']
+                created_at = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.utc)
+                viewing.viewed_on = created_at
+                viewing.twitter_status_id = tweet['id']
                 viewing.save()
             return viewing, created
         return None, False

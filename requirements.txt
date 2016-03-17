@@ -10,4 +10,5 @@ git+https://github.com/concentricsky/django-cachemodel.git@v2.1.5
 IMDbPY==5.0
 
 python-twitter==2.2
+pymongo==3.2.2
 

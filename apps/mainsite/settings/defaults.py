@@ -186,3 +186,12 @@ settings_fragment('rest_framework')
 ###
 
 settings_fragment('credentials')
+
+
+###
+#
+# Mongo credentials for twitter cache
+#
+###
+
+settings_fragment('mongo')

@@ -30,6 +30,7 @@ class Command(TweepyCommand):
             self.stdout.write(u"Searching for {count} tweets matching '{query}' last_id={last}".format(**options))
 
         tweet_count = 0
+        existing_count = 0
         while tweet_count < max_tweets:
             count = max_tweets - tweet_count
             try:
@@ -37,12 +38,13 @@ class Command(TweepyCommand):
                 if not new_tweets:
                     break
                 for t in new_tweets:
-                    self.process_tweet(t)
+                    if not self.store_tweet(t):
+                        existing_count += 1
                     tweet_count += 1
                 last_id = new_tweets[-1].id
             except tweepy.TweepError as e:
                 break
 
         if self.verbosity:
-            self.stdout.write(u"DONE.  last_id={}".format(last_id))
+            self.stdout.write(u"Found {}.  Skipped {}. last_id={}".format(tweet_count, existing_count, last_id))
 

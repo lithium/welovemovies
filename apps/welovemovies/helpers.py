@@ -3,8 +3,10 @@ from hashlib import md5
 
 import imdb
 import requests
+from django.conf import settings
 from django.core.cache import cache
 from django.core.files.storage import DefaultStorage
+from pymongo import MongoClient
 
 
 class ImdbHelper(object):
@@ -49,6 +51,8 @@ class ImdbHelper(object):
 
 
 class TweetScraper(object):
+    VERSION = 10
+
     _hashtags_strip = [
         re.compile(r'#dlmchallenge', re.IGNORECASE),
         re.compile(r'#366movies ?in ?#?366days', re.IGNORECASE),
@@ -140,4 +144,13 @@ class TweetScraper(object):
         match_sorted = sorted(match_title, cmp=lambda x, y: cmp(x.get('year'), y.get('year')), reverse=True)
         return match_sorted
 
+
+class MongoHelper(object):
+    def __init__(self):
+        self.config = getattr(settings, 'WLM_TWEETS_MONGO', {
+            'URL': 'mongodb://localhost:27017/',
+            'DATABASE': 'wlm_tweets',
+        })
+        self.client = MongoClient(self.config.get('URL'))
+        self.db = self.client[self.config.get('DATABASE')]
 
