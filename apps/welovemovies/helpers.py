@@ -51,7 +51,7 @@ class ImdbHelper(object):
 
 
 class TweetScraper(object):
-    VERSION = 10
+    VERSION = 17
 
     _hashtags_strip = [
         re.compile(r'#dlmchallenge', re.IGNORECASE),
@@ -62,14 +62,19 @@ class TweetScraper(object):
     ]
     _title_res = [
         re.compile(r'^#(?P<number>\d+) saw "(?P<title>[^"]+)" \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'^#(?P<number>\d+) (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'^#(?P<number>\d+) (?P<title>[^-]+)-', re.IGNORECASE),
+        re.compile(r'^(?P<number>\d+) (?P<title>[^-]+)-', re.IGNORECASE),
+        re.compile(r'^(?P<number>\d+): (?P<title>[^-]+)-', re.IGNORECASE),
         re.compile(r'^#(?P<number>\d+) saw (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^#(?P<number>\d+) (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^#(?P<number>\d+)\.(?P<title>[^\.]+)\.', re.IGNORECASE),
-        re.compile(r'^#(?P<number>\d+) (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
-        re.compile(r'#(?P<number>\d+) of 366\n(?P<title>[^\n]+)\n', re.IGNORECASE|re.MULTILINE),
+        re.compile(r'^#(?P<number>\d+) of 366\n(?P<title>[^\n]+)\n', re.IGNORECASE|re.MULTILINE),
         re.compile(r'^(?P<number>\d+)\. (?P<title>.+)\\n', re.IGNORECASE|re.MULTILINE),
         re.compile(r'^(?P<number>\d+)-(?P<title>[^\n]+)\n', re.IGNORECASE|re.MULTILINE),
         re.compile(r'^(?P<number>\d+)-(?P<title>[^\.]+)\.', re.IGNORECASE|re.MULTILINE),
+        re.compile(r'^(?P<number>\d+)\. (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
+        re.compile(r'^(?P<number>\d+) (?P<title>[^#]+) #dlmchallenge', re.IGNORECASE),
         re.compile(r'^#dlmchallenge (?P<number>\d+)/366 (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^#dlmchallenge (?P<number>\d+)-(?P<title>[^:]+):', re.IGNORECASE),
         re.compile(r'^#dlmchallenge #(?P<number>\d+)[- ](?P<title>[^\n]+)\n', re.IGNORECASE|re.MULTILINE),
@@ -80,11 +85,11 @@ class TweetScraper(object):
         re.compile(r'^(?P<number>\d+)/366: (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^#(?P<number>\d+): (?P<title>[^-]+)-', re.IGNORECASE),
         re.compile(r'^movie (?P<number>\d+)[-:] (?P<title>[^\.]+)\.', re.IGNORECASE),
+        re.compile(r'^movie (?P<number>\d+) (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^movie (?P<number>\d+): #(?P<title>[^-]+)-', re.IGNORECASE),
         re.compile(r'^movie number (?P<number>\d+): (?P<title>[^-]+)-', re.IGNORECASE),
         re.compile(r'^film (?P<number>\d+). (?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'^No (?P<number>\d+): (?P<title>[^\.]+)\.', re.IGNORECASE),
-        re.compile(r'^(?P<number>\d+) - (?P<title>[^-]+) -', re.IGNORECASE),
         re.compile(r'^(?P<number>\d+) #(?P<title>[^\.]+)\.', re.IGNORECASE),
         re.compile(r'Movie no.(?P<number>\d+) (?P<title>[^\(]+) \((?P<year>\d+)\)', re.IGNORECASE),
         re.compile(r'#(?P<number>\d+):(?P<title>[^\?]+)\?', re.IGNORECASE),

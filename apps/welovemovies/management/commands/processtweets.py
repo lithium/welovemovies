@@ -22,8 +22,10 @@ class Command(BaseCommand):
                                                {'processed': True,  'imported': False, 'processor_version': {'$lt': TweetScraper.VERSION}}
                                                ]})
 
+        unparsed = mongo.db.tweets.find({'processed': True,  'imported': False, 'processor_version': {'$gte': TweetScraper.VERSION}})
+
         if self.verbosity:
-            self.stdout.write("Found {} unprocessed tweets. Processing {}".format(cursor.count(), self.count))
+            self.stdout.write("Found {} unprocessed tweets.  Skipping {}.  Processing at most {}:".format(cursor.count(), unparsed.count(), self.count))
 
         miss_count = 0
         imported_count = 0
@@ -69,7 +71,7 @@ class Command(BaseCommand):
                 mongo.db.tweets.save(row)
 
         if self.verbosity:
-            self.stdout.write("Imported {count}. Skipped {skip}. Missed {miss}".format(count=imported_count,
-                                                                                       miss=miss_count,
-                                                                                       skip=skipped_count))
+            self.stdout.write("Imported {count}.  Skipped {skip}.  Missed {miss}".format(count=imported_count,
+                                                                                         miss=miss_count,
+                                                                                         skip=skipped_count))
 
