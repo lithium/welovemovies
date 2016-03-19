@@ -11,4 +11,4 @@ IMDbPY==5.0
 
 python-twitter==2.2
 pymongo==3.2.2
-
+tweepy==3.5.0
