@@ -86,6 +86,8 @@ class Movie(DefaultModel):
 
     def delete(self, *args, **kwargs):
         self.publish_delete('imdb_id')
+        for viewing in self.cached_viewings():
+            viewing.delete()
         return super(Movie, self).delete(*args, **kwargs)
 
     def fetch_imdb(self, max_cast=None):
@@ -347,6 +349,9 @@ class Viewing(DefaultModel):
         if self.rating is None:
             return ""
         return self.get_rating_display()
+
+    def __unicode__(self):
+        return u"<Viewing viewer={} movie={}>".format(self.viewer, self.movie)
 
 
 class ViewingCast(DefaultModel):
