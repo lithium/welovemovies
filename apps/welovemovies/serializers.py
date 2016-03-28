@@ -1,4 +1,6 @@
 import datetime
+
+import pytz
 from django.conf import settings
 from django.utils import timezone
 from rest_framework import serializers
@@ -25,9 +27,9 @@ class ImdbResultsSerializer(serializers.Serializer):
         return representation
 
 
-def seconds_since_epoch(dt=None, epoch=None):
+def seconds_since_epoch(dt=None, epoch=None, tzinfo=pytz.UTC):
     if epoch is None:
-        epoch = datetime.datetime(1970,1,1)
+        epoch = datetime.datetime(1970, 1, 1, tzinfo=tzinfo)
     if dt is None:
         dt = timezone.now()
     return (dt - epoch).total_seconds()
@@ -35,8 +37,10 @@ def seconds_since_epoch(dt=None, epoch=None):
 
 class ViewingGraphSerializer(serializers.Serializer):
     def to_representation(self, day_stats):
+        tz = pytz.timezone(self.context.get('timezone', 'UTC'))
         representation = {}
         for k,v in day_stats.items():
-            d = seconds_since_epoch(datetime.datetime.combine(k, datetime.datetime.min.time()))
+            dt = datetime.datetime.combine(k, datetime.datetime.min.time()).replace(tzinfo=tz)
+            d = seconds_since_epoch(dt)
             representation[int(d)] = len(v['viewings'])
         return representation

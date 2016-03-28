@@ -1,4 +1,6 @@
+import pytz
 from django.contrib.sites.models import Site
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,7 +37,8 @@ class UserViewingGraph(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         stats = user.viewing_graph(request)
-        serializer = ViewingGraphSerializer(stats, context={'request': request})
+        serializer = ViewingGraphSerializer(stats, context={'request': request,
+                                                            'timezone': user.timezone})
         return Response(serializer.data)
 
 
@@ -45,5 +48,7 @@ class SiteViewingGraph(APIView):
     def get(self, request):
         cached_site = CachedSite.objects.get_current(request)
         stats = cached_site.viewing_graph()
-        serializer = ViewingGraphSerializer(stats, context={'request': request})
+        tz = request.user.timezone if request.user.is_authenticated() else 'US/Pacific'
+        serializer = ViewingGraphSerializer(stats, context={'request': request,
+                                                            'timezone': tz})
         return Response(serializer.data)
