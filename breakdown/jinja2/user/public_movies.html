@@ -8,6 +8,35 @@
     <h1>{{user}} Loves Movies</h1>
 </div>
 
+<div class="container hidden-sm-down">
+    <div class="row card-stats">
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>{{"{:2.0f}%".format((loved_count / movie_count*1.0)*100)}}</h1>
+                <h6 class="text-muted">Movies<br>Loved ({{loved_count}})</h6>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>{{"{:2.0f}%".format((liked_count / movie_count*1.0)*100)}}</h1>
+                <h6 class="text-muted">Movies<br>Liked ({{liked_count}})</h6>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>{{"{:2.0f}%".format((hated_count / movie_count*1.0)*100)}}</h1>
+                <h6 class="text-muted">Movies<br>Hated ({{hated_count}})</h6>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-block">
+                <h1>{{"{:2.0f}%".format((hateliked_count / movie_count*1.0)*100)}}</h1>
+                <h6 class="text-muted">Movies<br>Hate for Liking ({{hateliked_count}})</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container movie-list">
 
     <table class="table table-hover ">

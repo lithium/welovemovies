@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.views.generic import UpdateView, TemplateView, DetailView
 
+from welovemovies.models import Viewing
 from wlmuser.forms import ProfileForm
 from wlmuser.models import WlmUser
 
@@ -49,8 +50,16 @@ class PublicMovieList(PublicProfile):
         context = super(PublicMovieList, self).get_context_data(**kwargs)
         user = self.get_object()
         movies = sorted(user.watched_movies(), lambda a,b: cmp(b.viewed_on, a.viewed_on))
+        loved_movies = filter(lambda v: v.rating == Viewing.RATING_LOVE, movies)
+        liked_movies = filter(lambda v: v.rating == Viewing.RATING_LIKE, movies)
+        hated_movies = filter(lambda v: v.rating == Viewing.RATING_HATE, movies)
+        hateliked_movies = filter(lambda v: v.rating == Viewing.RATING_HATELIKE, movies)
         context.update({
             'movies': movies,
             'movie_count': user.watched_count,
+            'loved_count': len(loved_movies),
+            'liked_count': len(liked_movies),
+            'hated_count': len(hated_movies),
+            'hateliked_count': len(hateliked_movies)
         })
         return context
